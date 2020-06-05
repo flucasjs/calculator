@@ -2,7 +2,7 @@ let input = document.getElementById("input");
 let output = document.getElementById("output");
 let currentNumber = 0;
 let currentOperator = "";
-let result = 0;
+let result = "";
 let expArr = [];
 let numArr = [];
 let state = 0;
@@ -36,13 +36,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
         
         location.reload();
 
-    } else if (value == "=") {
-
-        //To do
-
     }
-
-    
 
     let state1 = ((expArr.length % 2) == 0);
     let state2 = ((expArr.length % 2) != 0);
@@ -53,8 +47,10 @@ document.querySelector(".content").addEventListener("click", (event) => {
         // First value must be a number
         if (expArr.length == 0) {
 
+            numArr = [];
             numArr.push(value);
             input.innerHTML += `${numArr[numArr.length-1]}`;
+            output.innerHTML = "";
 
         // Following numbers produce an output every time a number is input
         } else {
@@ -70,34 +66,64 @@ document.querySelector(".content").addEventListener("click", (event) => {
     } else if (isOperator && numArr.length != 0 && state1) {
 
         let num = numArr.join("");
-
-        // First operator populated expression array with two value but produces no output.
+        
+        // First operator populates expression array with two value but produces no output.
         if (expArr.length == 0) {
-
+            
             expArr.push(num);
             expArr.push(value)
            
-    
-            currentOperator = value;
+            if (value != "=") {
+
+                currentOperator = value;
+
+            }
+            
             currentNumber = +num;
-    
+
+            // Number array is cleared each time since we are inputing a new number after an operator.
+            numArr = [];
+
+            if (result != "") {
+
+                input.innerHTML += `${result}${expArr[expArr.length-1]}`;
+                result = ""
+
+            } else {
+
+                input.innerHTML += `${expArr[expArr.length-1]}`;
+
+            }
             
 
         // Following operators reduce the output of the previous opertion.
         // Expression array is repopulated with new values.
         } else {
 
-            currentNumber = operations[currentOperator](+currentNumber, +num)
-            
-            currentOperator = value;
-            expArr = [currentNumber, currentOperator];
+            if (value == "=") {
+
+                result = operations[currentOperator](+currentNumber, +num);
+                input.innerHTML = "";                
+
+                expArr = [];
+                numArr = result.toString(10).split("").map((str) => parseInt(str));
+
+            } else {
+
+                currentNumber = operations[currentOperator](+currentNumber, +num);
+                currentOperator = value;
+    
+                expArr = [currentNumber, currentOperator];
+
+                // Number array is cleared each time since we are inputing a new number after an operator.
+                numArr = [];
+
+                // Display the result in the input display.
+                input.innerHTML += `${expArr[expArr.length-1]}`;
+
+            }
             
         }
 
-        // Number array is cleared each time since we are inputing a new number after an operator.
-        numArr = [];
-
-        // Display the result in the input display.
-        input.innerHTML += `${expArr[expArr.length-1]}`;
     }
 });
