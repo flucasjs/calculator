@@ -30,11 +30,21 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
     if (value == "c") {
 
-        location.reload();
+        result = "";
+        numArr = [];
+        expArr = [];
+        
+        input.innerHTML = "";
+        output.innerHTML = "";
 
     } else if (value == "ce") {
         
-        location.reload();
+        if (numArr.length == 0) return;
+        
+        input.innerHTML = input.innerHTML.slice(0, -numArr.length);
+        output.innerHTML = "";
+
+        numArr = [];
 
     }
 
@@ -47,6 +57,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
         // First value must be a number
         if (expArr.length == 0) {
 
+            result = "";
             numArr = [];
             numArr.push(value);
             input.innerHTML += `${numArr[numArr.length-1]}`;
@@ -70,13 +81,18 @@ document.querySelector(".content").addEventListener("click", (event) => {
         // First operator populates expression array with two value but produces no output.
         if (expArr.length == 0) {
             
-            expArr.push(num);
-            expArr.push(value)
-           
-            if (value != "=") {
+            
+            
+            if (value == "=") {
+
+                return;
+
+            } else {
 
                 currentOperator = value;
-
+                expArr.push(num);
+                expArr.push(value);
+                
             }
             
             currentNumber = +num;
@@ -87,7 +103,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
             if (result != "") {
 
                 input.innerHTML += `${result}${expArr[expArr.length-1]}`;
-                result = ""
+                result = "";
 
             } else {
 
