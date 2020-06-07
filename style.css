@@ -28,6 +28,7 @@ body {
 }
 
 #input {
+    font-family: 'Lexend Tera', sans-serif;
     padding: 15px;
     flex: 0 0 auto;
     background-color: darkgrey;
@@ -35,6 +36,7 @@ body {
 }
 
 #output {
+    font-family: 'Lexend Tera', sans-serif;
     padding-top: 25px;
     flex: 0 0 auto;
     font-size: 24px;
@@ -62,6 +64,7 @@ body {
 }
 
 .key p {
+    font-family: 'Roboto', sans-serif;
     font-size: 24px;
     user-select: none;
 }
