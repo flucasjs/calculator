@@ -1,3 +1,5 @@
+// ---------- GLOBAL VARIABLES ---------- //
+
 let input = document.getElementById("input");
 let output = document.getElementById("output");
 let currentNumber = 0;
@@ -7,13 +9,15 @@ let expArr = [];
 let numArr = [];
 let state = 0;
 
-operations = {
+let operations = {
     "+": (a, b) => a + b,
     "-": (a, b) => a - b,
     "*": (a, b) => a * b,
     "/": (a, b) => a / b,
     "%": (a, b) => a % b,
 };
+
+// ---------- EVENT LISTENERS ---------- //
 
 document.querySelector(".content").addEventListener("click", (event) => {
 
@@ -143,3 +147,245 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
     }
 });
+
+// ---------- CLASS DEFINITIONS ---------- //
+
+class Token {
+
+    constructor(type, value) {
+
+        this.type = type;
+        this.value = value;
+
+    }
+
+}
+
+// ---------- FUNCTION DEFINITIONS ---------- //
+
+function tokenize(str) {
+
+	var result = []; //array of tokens    
+    str = buffer(str);
+    console.log(str);
+	
+
+	str.forEach((char) => {
+
+		if (isDigit(char)) {
+
+			result.push(new Token("Literal", char));
+
+		} else if (isLetter(char) && char.length == 1) {
+
+			result.push(new Token("Variable", char));
+
+		} else if (isOperator(char)) {
+
+			result.push(new Token("Operator", char));
+
+		} else if (isLeftParenthesis(char)) {
+
+			result.push(new Token("Left Parenthesis", char));
+
+		} else if (isRightParenthesis(char)) {
+
+			result.push(new Token("Right Parenthesis", char));
+
+		} else if (isComma(char)) {
+
+			result.push(new Token("Function Argument Separator", char));
+
+		} else if (isFunction(char)) {
+    
+    	result.push(new Token("Function", char));
+    
+    }
+
+	});
+
+	return result;
+
+}
+
+function isComma(ch) {
+
+	return (ch === ",");
+  
+}
+
+function isDigit(ch) {
+
+	return /\d/.test(ch);
+  
+}
+
+function isLetter(ch) {
+
+	return /[a-z]/i.test(ch);
+  
+}
+
+function isOperator(ch) {
+
+	return /\+|-|\*|\/|\^/.test(ch);
+  
+}
+
+function isLeftParenthesis(ch) {
+
+	return (ch === "(");
+  
+}
+
+function isRightParenthesis(ch) {
+
+	return (ch == ")");
+  
+}
+
+function isDecimal(ch) {
+
+	return /\./.test(ch);
+
+}
+
+function isFunction(ch) {
+
+	return /sin|cos|tan|min|max/.test(ch);
+
+}
+
+function buffer(str) {
+
+	let numberBuffer = [];
+    let letterBuffer = [];
+    let result = [];
+
+	str = str.replace(/\s+/g, "");
+	str = str.split("");
+
+	for (let i = 0; i < str.length; i++) {
+  
+  	let ch = str[i];
+  
+  	if (isDigit(ch)){
+    
+    	numberBuffer.push(ch);
+    	
+    } else if (isDecimal(ch)) {
+    
+    	numberBuffer.push(ch);
+    
+    } else if (isLetter(ch)) {
+    
+    	if (numberBuffer.length > 0) {
+      
+        result.push(numberBuffer.join(""));
+        numberBuffer = [];
+        
+        result.push("*");
+      
+      }
+    	
+      letterBuffer.push(ch);
+    
+    } else if (isOperator(ch)) {
+    
+    	result.push(numberBuffer.join(""));
+      numberBuffer = [];
+      
+      for (let i = 0; i < letterBuffer.length; i++) {
+      
+      	result.push(letterBuffer[0]);
+      
+      }
+      
+      letterBuffer = [];
+      
+      result.push(ch);
+    
+    } else if (isLeftParenthesis(ch)) {
+    
+      if (letterBuffer.length > 0) {
+      
+      	result.push(letterBuffer.join(""));
+        letterBuffer = [];
+        
+        result.push(ch);
+        
+      } else if (numberBuffer.length > 0) {
+      
+      	result.push(numberBuffer.join(""));
+        numberBuffer = [];
+        
+        result.push("*");
+      
+      }
+      
+    } else if (isRightParenthesis(ch)) {
+    
+      if (letterBuffer.length > 0) {
+      
+        for (let i = 0; i < letterBuffer.length; i++) {
+
+          result.push(letterBuffer[i]);
+
+        }
+      
+        letterBuffer = [];
+      
+      } 
+      
+      if (numberBuffer.length > 0) {
+      
+        result.push(numberBuffer.join(""));
+        numberBuffer = [];
+      
+      }
+      
+      result.push(ch);
+    
+    } else if (isComma(ch)) {
+    
+    	result.push(numberBuffer.join(""));
+      numberBuffer = [];
+      
+      
+      for (let i = 0; i < letterBuffer.length; i++) {
+      
+      	result.push(letterBuffer[i]);
+      
+      }
+      
+      letterBuffer = [];
+      
+      result.push(ch);
+    
+    }
+    
+  }
+  
+  if (letterBuffer.length > 0) {
+      
+        for (let i = 0; i < letterBuffer.length; i++) {
+
+          result.push(letterBuffer[i]);
+
+        }
+      
+        letterBuffer = [];
+      
+      } 
+      
+  if (numberBuffer.length > 0) {
+
+    result.push(numberBuffer.join(""));
+    numberBuffer = [];
+
+  }
+  
+  return result;
+  
+}
+
