@@ -152,12 +152,12 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
 class Token {
 
-    constructor(type, value) {
+  constructor(type, value) {
 
-        this.type = type;
-        this.value = value;
+      this.type = type;
+      this.value = value;
 
-    }
+  }
 
 }
 
@@ -167,48 +167,48 @@ function tokenize(str) {
 
   var result = []; //array of tokens    
   str = buffer(str);
-  
-  
+
+
   str.forEach((char) => {
-  
+
     if (isDigit(char)) {
-  
+
       result.push(new Token("Literal", char));
-  
+
     } else if (isLetter(char) && char.length == 1) {
-  
+
       result.push(new Token("Variable", char));
-  
+
     } else if (isOperator(char)) {
-  
+
       result.push(new Token("Operator", char));
-  
+
     } else if (isLeftParenthesis(char)) {
-  
+
       result.push(new Token("Left Parenthesis", char));
-  
+
     } else if (isRightParenthesis(char)) {
-  
+
       result.push(new Token("Right Parenthesis", char));
-  
+
     } else if (isComma(char)) {
-  
+
       result.push(new Token("Function Argument Separator", char));
-  
+
     } else if (isFunction(char)) {
     
           result.push(new Token("Function", char));
     
         } else if (isSeperator(char)) {
-  
+
       result.push(new Token("Function Argument Seperator", char));
-  
+
     }	
-  
+
   });
-  
+
   return result;
-  
+
 }
 
 function buffer(str) {
@@ -216,14 +216,14 @@ function buffer(str) {
   let numberBuffer = [];
   let letterBuffer = [];
   let result = [];
-  
+
   str = str.replace(/\s+/g, "");
   str = str.split("");
-  
+
   for (let i = 0; i < str.length; i++) {
-  
+
     let ch = str[i];
-  
+
     if (isDigit(ch)){
     
       numberBuffer.push(ch);
@@ -257,11 +257,11 @@ function buffer(str) {
       if (letterBuffer.length) {
       
         for (let i = 0; i < letterBuffer.length; i++) {
-  
+
           result.push(letterBuffer[0]);
-  
+
         }
-  
+
         letterBuffer = [];
       
       }
@@ -271,17 +271,17 @@ function buffer(str) {
     } else if (isLeftParenthesis(ch)) {
     
         if (letterBuffer.length > 0) {
-  
+
           result.push(letterBuffer.join(""));
           letterBuffer = [];
           
-         } 
-         
-         if (numberBuffer.length > 0) {
+        } 
+        
+        if (numberBuffer.length > 0) {
       
           result.push(numberBuffer.join(""));
           numberBuffer = [];
-  
+
           result.push("*");
         }
         
@@ -292,9 +292,9 @@ function buffer(str) {
       if (letterBuffer.length > 0) {
       
         for (let i = 0; i < letterBuffer.length; i++) {
-  
+
           result.push(letterBuffer[i]);
-  
+
         }
       
         letterBuffer = [];
@@ -329,13 +329,13 @@ function buffer(str) {
     }
     
   }
-  
+
   if (letterBuffer.length > 0) {
       
         for (let i = 0; i < letterBuffer.length; i++) {
-  
+
           result.push(letterBuffer[i]);
-  
+
         }
       
         letterBuffer = [];
@@ -343,62 +343,35 @@ function buffer(str) {
       } 
       
   if (numberBuffer.length > 0) {
-  
+
     result.push(numberBuffer.join(""));
     numberBuffer = [];
-  
+
   }
-  
+
   return result;
-  
+
 }
 
 function parse(inp) {
 
   Array.prototype.peek = function() { return this.slice(-1)[0]; };
-  
+
   let outQueue = [];
   let opStack = [];
-  
+
   let assoc = {  "^" : "right",  "*" : "left",  "/" : "left",  "+" : "left",  "-" : "left" };
-  
+
   let prec = {  "^" : 4,  "*" : 3,  "/" : 3,  "+" : 2,  "-" : 2 };
-  
+
   Token.prototype.precedence = function() { return prec[this.value]; };
-  
+
   Token.prototype.associativity = function() { return assoc[this.value]; };
-  
+
   let tokens = tokenize(inp);
-  
+
   tokens.forEach( function(tkn) {
-  
-    console.log("token: " + tkn.value);
     
-    if (opStack.length) {
-    
-    let x = opStack.map((item)=>item.value).join(",");
-    
-    console.log("op: " + x);
-    
-    } else {
-    
-    console.log("op: ");
-    
-    }
-    
-    if (outQueue.length) {
-    
-    let x = outQueue.map((item)=>item.value).join(",");
-    
-    console.log("out: " + x);
-    
-    } else {
-    
-    console.log("out: ");
-    
-    }
-    
-  
     if (tkn.type == "Literal" || tkn.type == "Letter") {
     
     
@@ -413,9 +386,9 @@ function parse(inp) {
       if (opStack.length) {
       
         while (opStack.peek().value != "(") {
-  
+
           outQueue.push(opStack.pop());
-  
+
         }
       
       }
@@ -429,13 +402,13 @@ function parse(inp) {
           
           let cond1 = (tkn.associativity() == "left") && ((tkn.precedence() < opStack.peek().precedence()) || (tkn.precedence() == opStack.peek().precedence()));
           let cond2 = (tkn.associativity() == "right") && (tkn.precedence() < opStack.peek().precedence());
-  
+
           if (cond1 || cond2) {
-  
+
             outQueue.push(opStack.pop());
-  
+
           }
-  
+
         }
       
       }
@@ -451,9 +424,9 @@ function parse(inp) {
       if (opStack.length) {
       
           while (opStack.peek().value != "(") {
-  
+
           outQueue.push(opStack.pop());
-  
+
           }
       
       }
@@ -468,70 +441,99 @@ function parse(inp) {
     }
     
   });
-  
-  return outQueue.concat(opStack.reverse()).map((item)=>item.value).join(" ");
-  
+
+  //return outQueue.concat(opStack.reverse()).map((item)=>item.value).join(" ");
+
+  return outQueue.concat(opStack.reverse());
+
 }
 
 function isComma(ch) {
 
   return (ch === ",");
-  
+
 }
-  
-  function isDigit(ch) {
-  
+
+function isDigit(ch) {
+
   return /\d/.test(ch);
-  
+
 }
-  
-  function isLetter(ch) {
-  
+
+function isLetter(ch) {
+
   return /[a-z]/i.test(ch);
-  
+
 }
-  
-  function isOperator(ch) {
-  
+
+function isOperator(ch) {
+
   return /\+|-|\*|\/|\^/.test(ch);
-  
+
 }
-  
-  function isLeftParenthesis(ch) {
-  
+
+function isLeftParenthesis(ch) {
+
   return (ch === "(");
-  
+
 }
-  
-  function isRightParenthesis(ch) {
-  
+
+function isRightParenthesis(ch) {
+
   return (ch == ")");
-  
+
 }
-  
-  function isDecimal(ch) {
-  
+
+function isDecimal(ch) {
+
   return /\./.test(ch);
-  
+
 }
-  
-  function isFunction(ch) {
-  
+
+function isFunction(ch) {
+
   return /sin|cos|tan|min|max/.test(ch);
-  
+
 }
-  
-  function isSeperator(ch) {
-  
+
+function isSeperator(ch) {
+
   return /,/.test(ch);
-  
+
 }
 
+function evaluate(rpnArr) {
 
+  let numStack = [];
 
+  let operations = {
 
+      "+": (a, b) => +a + +b,
+      "-": (a, b) => a - b,
+      "*": (a, b) => a * b,
+      "/": (a, b) => a / b,
+      "^": (a, b) => a ** b,
+      "%": (a, b) => a % b,
 
+  };
 
+  rpnArr.forEach( (tkn) => {
 
+    if (tkn.type == "Literal") {
+    
+      numStack.push(tkn.value);
+    
+    } else if (tkn.type == "Operator") {
+    
+      let num2 = numStack.pop();
+      let num1 = numStack.pop();
 
+      numStack.push(operations[tkn.value](num1, num2));
+    
+    }
+    
+  });
 
+  return numStack.pop();
+
+}
