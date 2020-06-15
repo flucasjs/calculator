@@ -1,15 +1,10 @@
 // ---------- GLOBAL VARIABLES ---------- //
 
-let input = document.getElementById("input");
-let output = document.getElementById("output");
-let currentNumber = 0;
-let currentOperator = "";
-let result = "";
-let expArr = [];
-let numArr = [];
-let state = 0;
-let string = "";
-let x = 0;
+let inputElement = document.getElementById("input");
+let outputElement = document.getElementById("output");
+let output = "";
+let input = "";
+let prevInput = "";
 
 let operations = {
     "+": (a, b) => a + b,
@@ -29,39 +24,62 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (!document.querySelector(".content").contains(element)) return;
     
     let value = element.id;
-    let isOperator = element.dataset.isOperator;
-    let isNumber = element.dataset.isNumber;
-    let output = document.getElementById("output");
-    let input = document.getElementById("input");
-    
-    string += value;
-    
-    result = parse(string);
-    result = evaluate(result);
 
-    if (value == "=") {
+    if  (value == "=") {
 
-      string = result;
+      input = output;
+
+      if (output) {
+
+        inputElement.innerHTML = output;
+
+      }
+      
 
     } else if (value == "c") {
 
-      string = "";
-      result = "";
+      input = "";
+      output = "";
 
-    }
+      inputElement.innerHTML = input;
+      outputElement.innerHTML = output;
 
-    input.innerHTML = string;
+    } else if (value == "ce") {
 
-    if (isNaN(value)) {
+      input += value
+      
+      if (prevInput) {
 
-      output.innerHTML = "";
+        let replace = `${prevInput}${value}`
+        input = input.replace(replace, '');
+
+        output = evaluate(parse(input));
+        inputElement.innerHTML = input;
+
+      }
 
     } else {
 
-      output.innerHTML = result;
+      input += value;
+      output = evaluate(parse(input));
+
+      inputElement.innerHTML = input;
 
     }
 
+    if (!isNaN(output)) {
+
+      outputElement.innerHTML = output;
+
+    } else {
+
+      outputElement.innerHTML = "";
+
+    }
+
+    prevInput = value;
+
+    
 });
 
 // ---------- CLASS DEFINITIONS ---------- //
@@ -276,9 +294,9 @@ function parse(inp) {
   let outQueue = [];
   let opStack = [];
 
-  let assoc = {  "^": "right",  "*": "left",  "/": "left", "%": "left",  "+": "left",  "-": "left" };
+  let assoc = {  "^" : "right",  "*" : "left",  "/" : "left",  "+" : "left",  "-" : "left" };
 
-  let prec = {  "^": 4,  "*": 3,  "/": 3, "%": 3,  "+": 2,  "-": 2 };
+  let prec = {  "^" : 4,  "*" : 3,  "/" : 3,  "+" : 2,  "-" : 2 };
 
   Token.prototype.precedence = function() { return prec[this.value]; };
 
@@ -384,7 +402,7 @@ function isLetter(ch) {
 
 function isOperator(ch) {
 
-  return /\+|-|\*|\/|\^|\%/.test(ch);
+  return /\+|-|\*|\/|\^/.test(ch);
 
 }
 
