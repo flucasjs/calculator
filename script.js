@@ -84,8 +84,6 @@ document.querySelector(".content").addEventListener("click", (event) => {
       
       }
 
-
-
     } else {
 
       input += value;
@@ -320,9 +318,9 @@ function parse(inp) {
   let outQueue = [];
   let opStack = [];
 
-  let assoc = {  "^" : "right",  "*" : "left",  "/" : "left",  "+" : "left",  "-" : "left" };
+  let assoc = {  "^": "right",  "*": "left",  "/": "left", "%": "left",  "+": "left",  "-": "left" };
 
-  let prec = {  "^" : 4,  "*" : 3,  "/" : 3,  "+" : 2,  "-" : 2 };
+  let prec = {  "^": 4,  "*": 3,  "/": 3, "%": 3,  "+": 2,  "-": 2 };
 
   Token.prototype.precedence = function() { return prec[this.value]; };
 
@@ -428,7 +426,7 @@ function isLetter(ch) {
 
 function isOperator(ch) {
 
-  return /\+|-|\*|\/|\^/.test(ch);
+  return /\+|-|\*|\/|\^|\%/.test(ch);
 
 }
 
