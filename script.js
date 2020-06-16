@@ -5,6 +5,7 @@ let outputElement = document.getElementById("output");
 let output = "";
 let input = "";
 let prevInput = "";
+let divideByZeroError = false;
 
 let operations = {
     "+": (a, b) => a + b,
@@ -25,6 +26,30 @@ document.querySelector(".content").addEventListener("click", (event) => {
     
     let value = element.id;
 
+    if (divideByZeroError) {
+
+      if (!isDigit(value)) {
+
+        divideByZeroError = false;
+        return;
+
+      }
+
+    }
+    
+    if ((isOperator(value) && isOperator(input.slice(-1))) || (prevInput == "ce" && value == "ce") || (input == "" && value == "ce")) {
+      
+      return;
+
+    } else if ((prevInput == "/" && value == "0")) {
+
+      outputElement.innerHTML = "Cannot divide by zero ";
+      divideByZeroError = true;
+      return;
+
+    }
+
+
     if  (value == "=") {
 
       input = output;
@@ -32,6 +57,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
       if (output) {
 
         inputElement.innerHTML = output;
+        output = NaN;
 
       }
       
@@ -55,8 +81,10 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
         output = evaluate(parse(input));
         inputElement.innerHTML = input;
-
+      
       }
+
+
 
     } else {
 
@@ -76,10 +104,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
       outputElement.innerHTML = "";
 
     }
-
-    prevInput = value;
-
-    
+  
 });
 
 // ---------- CLASS DEFINITIONS ---------- //
@@ -102,6 +127,7 @@ function tokenize(str) {
   var result = []; //array of tokens    
   str = buffer(str);
 
+  prevInput = str.slice(-1)[0]
 
   str.forEach((char) => {
 
