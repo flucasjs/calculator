@@ -47,8 +47,11 @@ document.querySelector(".content").addEventListener("click", (event) => {
       divideByZeroError = true;
       return;
 
-    }
+    } else if (input == "" && isOperator(value)) {
 
+      value = "0" + value;
+
+    }
 
     if  (value == "=") {
 
@@ -61,7 +64,6 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
       }
       
-
     } else if (value == "c") {
 
       input = "";
