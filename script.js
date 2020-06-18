@@ -1,30 +1,27 @@
-// ---------- GLOBAL VARIABLES ---------- //
+// -------------------------------------------------- CLASS DEFINITIONS -------------------------------------------------- //
 
-let inputElement = document.getElementById("input");
-let outputElement = document.getElementById("output");
-let output = "";
-let input = "";
-let prevInput = "";
-let divideByZeroError = false;
 
-let operations = {
-    "+": (a, b) => a + b,
-    "-": (a, b) => a - b,
-    "*": (a, b) => a * b,
-    "/": (a, b) => a / b,
-    "%": (a, b) => a % b,
-};
+class Token {
 
-// ---------- EVENT LISTENERS ---------- //
+  constructor(type, value) {
 
-document.querySelector(".content").addEventListener("click", (event) => {
+      this.type = type;
+      this.value = value;
 
-    let element = event.target.closest(".key");
+  }
 
-    if (!element) return;
-    if (!document.querySelector(".content").contains(element)) return;
-    
-    let value = element.id;
+}
+
+class Calculator {
+
+  constructor(input = "", output = "") {
+
+    this.input = input;
+    this.output = output;
+
+  }
+
+  newEntry(value) {
 
     if (divideByZeroError) {
 
@@ -37,7 +34,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
     }
     
-    if ((isOperator(value) && isOperator(input.slice(-1))) || (prevInput == "ce" && value == "ce") || (input == "" && value == "ce")) {
+    if ((isOperator(value) && isOperator(c.input.slice(-1))) || (prevInput == "ce" && value == "ce") || (c.input == "" && value == "ce")) {
       
       return;
 
@@ -55,72 +52,103 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
     if  (value == "=") {
 
-      input = output;
+      c.input = c.output;
 
-      if (output) {
+      if (c.output) {
 
         inputElement.innerHTML = output;
-        output = NaN;
+        c.output = NaN;
 
       }
       
     } else if (value == "c") {
 
-      input = "";
-      output = "";
+      c.input = "";
+      c.output = "";
 
-      inputElement.innerHTML = input;
-      outputElement.innerHTML = output;
+      inputElement.innerHTML = c.input;
+      outputElement.innerHTML = c.output;
 
     } else if (value == "ce") {
 
-      input += value
+      c.input += value
       
       if (prevInput) {
 
         let replace = `${prevInput}${value}`
-        input = input.replace(replace, '');
+        c.input = c.input.replace(replace, '');
 
-        output = evaluate(parse(input));
-        inputElement.innerHTML = input;
+        c.output = evaluate(parse(c.input));
+        inputElement.innerHTML = c.input;
       
       }
 
     } else {
 
-      input += value;
-      output = evaluate(parse(input));
+      c.input += value;
+      c.output = evaluate(parse(c.input));
 
-      inputElement.innerHTML = input;
+      inputElement.innerHTML = c.input;
 
     }
 
-    if (!isNaN(output)) {
+    if (!isNaN(c.output)) {
 
-      outputElement.innerHTML = output;
+      outputElement.innerHTML = c.output;
 
     } else {
 
       outputElement.innerHTML = "";
 
     }
-  
-});
-
-// ---------- CLASS DEFINITIONS ---------- //
-
-class Token {
-
-  constructor(type, value) {
-
-      this.type = type;
-      this.value = value;
 
   }
 
+  //To Do:
+  // Add methods...
+  //c.newEntry(value);
+  //c.calculate();
+  //c.updateDisplay();
+  
 }
 
-// ---------- FUNCTION DEFINITIONS ---------- //
+// -------------------------------------------------- GLOBAL VARIABLES -------------------------------------------------- //
+
+let inputElement = document.getElementById("input");
+let outputElement = document.getElementById("output");
+
+let c = new Calculator("", 0);
+
+let prevInput = "";
+let divideByZeroError = false;
+
+let operations = {
+    "+": (a, b) => a + b,
+    "-": (a, b) => a - b,
+    "*": (a, b) => a * b,
+    "/": (a, b) => a / b,
+    "%": (a, b) => a % b,
+};
+
+// -------------------------------------------------- EVENT LISTENERS -------------------------------------------------- //
+
+document.querySelector(".content").addEventListener("click", (event) => {
+
+    let element = event.target.closest(".key");
+
+    if (!element) return;
+    if (!document.querySelector(".content").contains(element)) return;
+    
+    let value = element.id;
+
+    // To Do:
+    c.newEntry(value);
+    //c.calculate();
+    //c.updateDisplay();
+
+});
+
+// -------------------------------------------------- FUNCTION DEFINITIONS -------------------------------------------------- //
 
 function tokenize(str) {
 
