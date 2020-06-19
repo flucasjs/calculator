@@ -21,19 +21,28 @@ class Calculator {
 
   }
 
-  newEntry(value) {
+  errorCheck() {
 
     if (divideByZeroError) {
 
       if (!isDigit(value)) {
 
         divideByZeroError = false;
-        return;
+        return false;
 
       }
 
     }
+
+    return true;
+
+  }
+
+  newEntry(value) {
+
     
+    if  (!this.errorCheck()) { return; }
+
     if ((isOperator(value) && isOperator(c.input.slice(-1))) || (prevInput == "ce" && value == "ce") || (c.input == "" && value == "ce")) {
       
       return;
@@ -101,6 +110,12 @@ class Calculator {
       outputElement.innerHTML = "";
 
     }
+
+  }
+
+  calculate() {
+
+
 
   }
 
