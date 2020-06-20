@@ -14,11 +14,13 @@ class Token {
 
 class Calculator {
 
-  constructor(input = "", output = "") {
+  constructor(inputDisplay, outputDisplay) {
 
-    this.input = input;
-    this.output = output;
-
+    this.inputDisplay = inputDisplay;
+    this.outputDisplay = outputDisplay;
+    this.input = "";
+    this.output = "";
+    
   }
 
   errorCheck() {
@@ -34,88 +36,107 @@ class Calculator {
 
     }
 
+    // if ((isOperator(value) && isOperator(c.input.slice(-1))) || (prevInput == "ce" && value == "ce") || (c.input == "" && value == "ce")) {
+      
+    //   return;
+
+    // } else if ((prevInput == "/" && value == "0")) {
+
+    //   outputElement.innerHTML = "Cannot divide by zero ";
+    //   divideByZeroError = true;
+    //   return;
+
+    // } else if (input == "" && isOperator(value)) {
+
+    //   value = "0" + value;
+
+    // }
+
+    // if  (value == "=") {
+
+    //   c.input = c.output;
+
+    //   if (c.output) {
+
+    //     inputElement.innerHTML = output;
+    //     c.output = NaN;
+
+    //   }
+      
+    // } else if (value == "c") {
+
+    //   c.input = "";
+    //   c.output = "";
+
+    //   inputElement.innerHTML = c.input;
+    //   outputElement.innerHTML = c.output;
+
+    // } else if (value == "ce") {
+
+    //   c.input += value
+      
+    //   if (prevInput) {
+
+    //     let replace = `${prevInput}${value}`
+    //     c.input = c.input.replace(replace, '');
+
+    //     c.output = evaluate(parse(c.input));
+    //     inputElement.innerHTML = c.input;
+      
+    //   }
+
+    // }
+
+    // if (!isNaN(c.output)) {
+
+    //   outputElement.innerHTML = c.output;
+
+    // } else {
+
+    //   outputElement.innerHTML = "";
+
+    // }
+
     return true;
 
   }
 
   newEntry(value) {
 
-    
-    if  (!this.errorCheck()) { return; }
+    //if  (!this.errorCheck()) { return; }
 
-    if ((isOperator(value) && isOperator(c.input.slice(-1))) || (prevInput == "ce" && value == "ce") || (c.input == "" && value == "ce")) {
-      
-      return;
-
-    } else if ((prevInput == "/" && value == "0")) {
-
-      outputElement.innerHTML = "Cannot divide by zero ";
-      divideByZeroError = true;
-      return;
-
-    } else if (input == "" && isOperator(value)) {
-
-      value = "0" + value;
-
-    }
-
-    if  (value == "=") {
-
-      c.input = c.output;
-
-      if (c.output) {
-
-        inputElement.innerHTML = output;
-        c.output = NaN;
-
-      }
-      
-    } else if (value == "c") {
-
-      c.input = "";
-      c.output = "";
-
-      inputElement.innerHTML = c.input;
-      outputElement.innerHTML = c.output;
-
-    } else if (value == "ce") {
-
-      c.input += value
-      
-      if (prevInput) {
-
-        let replace = `${prevInput}${value}`
-        c.input = c.input.replace(replace, '');
-
-        c.output = evaluate(parse(c.input));
-        inputElement.innerHTML = c.input;
-      
-      }
-
-    } else {
-
-      c.input += value;
-      c.output = evaluate(parse(c.input));
-
-      inputElement.innerHTML = c.input;
-
-    }
-
-    if (!isNaN(c.output)) {
-
-      outputElement.innerHTML = c.output;
-
-    } else {
-
-      outputElement.innerHTML = "";
-
-    }
+    this.input += value;
 
   }
 
   calculate() {
 
+    this.output = evaluate(parse(this.input));
 
+  }
+
+  updateDisplay() {
+
+    this.inputDisplay.innerHTML = this.input;
+    this.outputDisplay.innerHTML = this.output;
+
+  }
+
+  clear() {
+
+    this.input = "";
+    this.output = "";
+
+    this.updateDisplay();
+
+  }
+
+  equal() {
+
+    this.input = this.output;
+    this.output = "";
+
+    this.updateDisplay();
 
   }
 
@@ -132,7 +153,7 @@ class Calculator {
 let inputElement = document.getElementById("input");
 let outputElement = document.getElementById("output");
 
-let c = new Calculator("", 0);
+let c = new Calculator(inputElement, outputElement);
 
 let prevInput = "";
 let divideByZeroError = false;
@@ -154,12 +175,27 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (!element) return;
     if (!document.querySelector(".content").contains(element)) return;
     
+    if (element.id == "c") {
+
+      c.clear();
+      return;
+
+    }
+
+    if (element.id == "=") {
+
+      c.equal();
+      return;
+
+    }
+
+
     let value = element.id;
 
     // To Do:
     c.newEntry(value);
-    //c.calculate();
-    //c.updateDisplay();
+    c.calculate();
+    c.updateDisplay();
 
 });
 
@@ -168,11 +204,11 @@ document.querySelector(".content").addEventListener("click", (event) => {
 function tokenize(str) {
 
   var result = []; //array of tokens    
-  str = buffer(str);
+  tokenArr = buffer(str);
 
-  prevInput = str.slice(-1)[0]
+  prevInput = tokenArr.slice(-1)[0];
 
-  str.forEach((char) => {
+  tokenArr.forEach((char) => {
 
     if (isDigit(char)) {
 
@@ -267,6 +303,12 @@ function buffer(str) {
 
         letterBuffer = [];
       
+      }
+
+      if (!result.length) {
+        
+        result.push("0");
+        
       }
       
       result.push(ch);
@@ -530,6 +572,9 @@ function evaluate(rpnArr) {
     
       let num2 = numStack.pop();
       let num1 = numStack.pop();
+
+      if (!num1) { num1 = 0; }
+      if (!num2) { num2 = 0; }
 
       numStack.push(operations[tkn.value](num1, num2));
     
