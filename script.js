@@ -20,22 +20,12 @@ class Calculator {
     this.outputDisplay = outputDisplay;
     this.input = "";
     this.output = "";
+    this.previousInput = "";
+    //this.negateState = false;
     
   }
 
-  errorCheck() {
-
-    if (divideByZeroError) {
-
-      if (!isDigit(value)) {
-
-        divideByZeroError = false;
-        return false;
-
-      }
-
-    }
-
+ 
     // if ((isOperator(value) && isOperator(c.input.slice(-1))) || (prevInput == "ce" && value == "ce") || (c.input == "" && value == "ce")) {
       
     //   return;
@@ -52,26 +42,7 @@ class Calculator {
 
     // }
 
-    // if  (value == "=") {
-
-    //   c.input = c.output;
-
-    //   if (c.output) {
-
-    //     inputElement.innerHTML = output;
-    //     c.output = NaN;
-
-    //   }
-      
-    // } else if (value == "c") {
-
-    //   c.input = "";
-    //   c.output = "";
-
-    //   inputElement.innerHTML = c.input;
-    //   outputElement.innerHTML = c.output;
-
-    // } else if (value == "ce") {
+    //   if (value == "ce") {
 
     //   c.input += value
       
@@ -87,26 +58,36 @@ class Calculator {
 
     // }
 
-    // if (!isNaN(c.output)) {
 
-    //   outputElement.innerHTML = c.output;
-
-    // } else {
-
-    //   outputElement.innerHTML = "";
-
-    // }
-
-    return true;
-
-  }
 
   newEntry(value) {
 
-    //if  (!this.errorCheck()) { return; }
+    if (isOperator(value) && this.input == "") {
 
-    this.input += value;
+      if (value == "-") {
 
+        this.input += value;
+
+      } else {
+
+        this.input = "0" + value;
+        this.previousInput = 0;
+
+      }
+      
+    } else {
+      
+      this.input += value;
+      this.previousInput += value;
+
+      if (isOperator(this.previousInput.slice(-2)[0]) && isDigit(value)) {
+
+        this.previousInput = value;
+
+      }
+
+    }
+    
   }
 
   calculate() {
@@ -117,8 +98,13 @@ class Calculator {
 
   updateDisplay() {
 
+    if (!isNaN(this.output)) {
+
+      this.outputDisplay.innerHTML = this.output;
+
+    }
+
     this.inputDisplay.innerHTML = this.input;
-    this.outputDisplay.innerHTML = this.output;
 
   }
 
@@ -126,6 +112,8 @@ class Calculator {
 
     this.input = "";
     this.output = "";
+    this.previousInput = "";
+    this.negatesState = false;
 
     this.updateDisplay();
 
@@ -140,11 +128,23 @@ class Calculator {
 
   }
 
-  //To Do:
-  // Add methods...
-  //c.newEntry(value);
-  //c.calculate();
-  //c.updateDisplay();
+  // negate() {
+
+  //   this.negateState = this.negateState ? false : true;
+
+  //   if (this.negateState == true) {
+
+  //     this.input = this.input.splice((this.input.length - this.previousInput.length), this.previousInput.length, `-${this.previousInput}`);
+  //     this.updateDisplay();
+
+  //   } else {
+      
+  //     this.input = this.input.splice((this.input.length - this.previousInput.length - 1), this.previousInput.length + 1, `${this.previousInput}`);
+  //     this.updateDisplay();
+
+  //   }
+    
+  }
   
 }
 
@@ -156,7 +156,6 @@ let outputElement = document.getElementById("output");
 let c = new Calculator(inputElement, outputElement);
 
 let prevInput = "";
-let divideByZeroError = false;
 
 let operations = {
     "+": (a, b) => a + b,
@@ -174,25 +173,30 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
     if (!element) return;
     if (!document.querySelector(".content").contains(element)) return;
+
+    let value = element.id;
     
-    if (element.id == "c") {
+    if (value == "c") {
 
       c.clear();
       return;
 
     }
 
-    if (element.id == "=") {
+    if (value == "=") {
 
       c.equal();
       return;
 
     }
 
+    if (value == "+/-") {
 
-    let value = element.id;
+      c.negate();
+      return;
 
-    // To Do:
+    }
+
     c.newEntry(value);
     c.calculate();
     c.updateDisplay();
@@ -291,6 +295,15 @@ function buffer(str) {
         result.push(numberBuffer.join(""));
         numberBuffer = [];
       
+      } else {
+
+        if (isNegative(ch)) {
+
+          numberBuffer.push(ch);
+          continue;
+
+        }
+
       }
       
       if (letterBuffer.length) {
@@ -303,12 +316,6 @@ function buffer(str) {
 
         letterBuffer = [];
       
-      }
-
-      if (!result.length) {
-        
-        result.push("0");
-        
       }
       
       result.push(ch);
@@ -457,7 +464,7 @@ function parse(inp) {
         }
       
       }
-    
+
       opStack.push(tkn);
     
     } else if (tkn.type == "Left Parenthesis") {
@@ -547,6 +554,12 @@ function isSeperator(ch) {
 
 }
 
+function isNegative(ch) {
+
+  return /-/.test(ch);
+
+}
+
 function evaluate(rpnArr) {
 
   let numStack = [];
@@ -569,15 +582,21 @@ function evaluate(rpnArr) {
       numStack.push(tkn.value);
     
     } else if (tkn.type == "Operator") {
-    
-      let num2 = numStack.pop();
-      let num1 = numStack.pop();
 
-      if (!num1) { num1 = 0; }
-      if (!num2) { num2 = 0; }
+      if (numStack.length) {
 
-      numStack.push(operations[tkn.value](num1, num2));
+        let num2 = numStack.pop();
+
+        numStack.push(operations[tkn.value](numStack.pop(), num2));
+
+      } else if (isNegative(tkn.value)) {
+
+        numStack.push(tkn.value);
+
+      }
     
+      
+
     }
     
   });
@@ -585,3 +604,11 @@ function evaluate(rpnArr) {
   return numStack.pop();
 
 }
+
+// if (!String.prototype.splice) {
+
+//   String.prototype.splice = function(start, delCount, newSubStr) {
+//       return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
+//   };
+
+// }
