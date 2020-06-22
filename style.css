@@ -27,7 +27,7 @@ body {
     background-color: rgb(0, 200, 200);
 }
 
-#input {
+#exp {
     font-family: 'Lexend Tera', sans-serif;
     padding: 15px;
     flex: 0 0 auto;
@@ -35,7 +35,7 @@ body {
     text-align: right;
 }
 
-#output {
+#io {
     font-family: 'Lexend Tera', sans-serif;
     padding-top: 25px;
     flex: 0 0 auto;

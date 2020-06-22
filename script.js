@@ -14,13 +14,14 @@ class Token {
 
 class Calculator {
 
-  constructor(inputDisplay, outputDisplay) {
+  constructor(expDisplay, ioDisplay) {
 
-    this.inputDisplay = inputDisplay;
-    this.outputDisplay = outputDisplay;
+    this.expDisplay = expDisplay;
+    this.ioDisplay = ioDisplay;
     this.input = "";
     this.output = "";
     this.previousInput = "";
+    this.rpnTokenArray = [];
     //this.negateState = false;
     
   }
@@ -92,19 +93,36 @@ class Calculator {
 
   calculate() {
 
-    this.output = evaluate(parse(this.input));
+    this.rpnTokenArray = parse(this.input);
+    this.output = evaluate(this.rpnTokenArray);
+
+  }
+
+  updateExpressionDisplay() {
+
+    if (this.rpnTokenArray.length > 1 || (this.input == "")) {
+
+      this.expDisplay.innerHTML = this.input;
+
+    }
+
+    
+  }
+
+  updateIODisplay() {
+
+    if (!isNaN(this.output)) {
+
+      this.ioDisplay.innerHTML = this.output;
+
+    }
 
   }
 
   updateDisplay() {
 
-    if (!isNaN(this.output)) {
-
-      this.outputDisplay.innerHTML = this.output;
-
-    }
-
-    this.inputDisplay.innerHTML = this.input;
+    this.updateExpressionDisplay();
+    this.updateIODisplay();
 
   }
 
@@ -114,6 +132,7 @@ class Calculator {
     this.output = "";
     this.previousInput = "";
     this.negatesState = false;
+    this.rpnTokenArray = [];
 
     this.updateDisplay();
 
@@ -144,16 +163,16 @@ class Calculator {
 
   //   }
     
-  }
+  //}
   
 }
 
 // -------------------------------------------------- GLOBAL VARIABLES -------------------------------------------------- //
 
-let inputElement = document.getElementById("input");
-let outputElement = document.getElementById("output");
+let expDisplay = document.getElementById("exp");
+let ioDisplay = document.getElementById("io");
 
-let c = new Calculator(inputElement, outputElement);
+let c = new Calculator(expDisplay, ioDisplay);
 
 let prevInput = "";
 
