@@ -22,6 +22,7 @@ class Calculator {
     this.output = "";
     this.previousInput = "";
     this.rpnTokenArray = [];
+    this.expArray = [];
     //this.negateState = false;
     
   }
@@ -88,21 +89,25 @@ class Calculator {
       }
 
     }
+
+    this.expArr = tokenize(this.input);
+    this.rpnTokenArray = parse(this.expArr);
     
   }
 
   calculate() {
 
-    this.rpnTokenArray = parse(this.input);
+    
     this.output = evaluate(this.rpnTokenArray);
 
   }
 
   updateExpressionDisplay() {
 
+
     if (this.rpnTokenArray.length > 1 || (this.input == "")) {
 
-      this.expDisplay.innerHTML = this.input;
+      this.expDisplay.innerHTML = this.expArr.map((item)=>item.value).join("");
 
     }
 
@@ -111,9 +116,17 @@ class Calculator {
 
   updateIODisplay() {
 
-    if (!isNaN(this.output)) {
+    if (this.expArr.slice(-1)[0] == undefined) {
 
-      this.ioDisplay.innerHTML = this.output;
+      this.ioDisplay.innerHTML = "";
+
+    } else if (this.expArr.slice(-1)[0].value == "=") {
+
+      this.ioDisplay.innerHTML = this.input;
+
+    } else if (!isOperator(this.expArr.slice(-1)[0].value)) {
+      
+      this.ioDisplay.innerHTML = this.expArr.slice(-1)[0].value;
 
     }
 
@@ -133,6 +146,7 @@ class Calculator {
     this.previousInput = "";
     this.negatesState = false;
     this.rpnTokenArray = [];
+    this.expArr = [];
 
     this.updateDisplay();
 
@@ -140,10 +154,15 @@ class Calculator {
 
   equal() {
 
+
+    this.calculate();
     this.input = this.output;
     this.output = "";
+    this.expArr.push(new Token("Operator", "="));
 
     this.updateDisplay();
+
+    this.expArr = [new Token("Literal", this.output)];
 
   }
 
@@ -217,7 +236,6 @@ document.querySelector(".content").addEventListener("click", (event) => {
     }
 
     c.newEntry(value);
-    c.calculate();
     c.updateDisplay();
 
 });
@@ -424,7 +442,7 @@ function buffer(str) {
 
 }
 
-function parse(inp) {
+function parse(tokenArr) {
 
   Array.prototype.peek = function() { return this.slice(-1)[0]; };
 
@@ -439,9 +457,7 @@ function parse(inp) {
 
   Token.prototype.associativity = function() { return assoc[this.value]; };
 
-  let tokens = tokenize(inp);
-
-  tokens.forEach( function(tkn) {
+  tokenArr.forEach( function(tkn) {
     
     if (tkn.type == "Literal" || tkn.type == "Letter") {
     
