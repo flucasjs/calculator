@@ -20,46 +20,10 @@ class Calculator {
     this.ioDisplay = ioDisplay;
     this.input = "";
     this.output = "";
-    this.previousInput = "";
     this.rpnTokenArray = [];
     this.expArray = [];
-    //this.negateState = false;
     
   }
-
- 
-    // if ((isOperator(value) && isOperator(c.input.slice(-1))) || (prevInput == "ce" && value == "ce") || (c.input == "" && value == "ce")) {
-      
-    //   return;
-
-    // } else if ((prevInput == "/" && value == "0")) {
-
-    //   outputElement.innerHTML = "Cannot divide by zero ";
-    //   divideByZeroError = true;
-    //   return;
-
-    // } else if (input == "" && isOperator(value)) {
-
-    //   value = "0" + value;
-
-    // }
-
-    //   if (value == "ce") {
-
-    //   c.input += value
-      
-    //   if (prevInput) {
-
-    //     let replace = `${prevInput}${value}`
-    //     c.input = c.input.replace(replace, '');
-
-    //     c.output = evaluate(parse(c.input));
-    //     inputElement.innerHTML = c.input;
-      
-    //   }
-
-    // }
-
 
 
   newEntry(value) {
@@ -73,20 +37,12 @@ class Calculator {
       } else {
 
         this.input = "0" + value;
-        this.previousInput = 0;
 
       }
       
     } else {
       
       this.input += value;
-      this.previousInput += value;
-
-      if (isOperator(this.previousInput.slice(-2)[0]) && isDigit(value)) {
-
-        this.previousInput = value;
-
-      }
 
     }
 
@@ -143,12 +99,21 @@ class Calculator {
 
     this.input = "";
     this.output = "";
-    this.previousInput = "";
-    this.negatesState = false;
     this.rpnTokenArray = [];
     this.expArr = [];
+    this.updateDisplay();
+
+  }
+
+  clearExpression() {
+
+    this.expArr.slice(-1)[0].value = null;
+    this.input = "";
+    this.output = "";
 
     this.updateDisplay();
+
+    this.expArr.pop();
 
   }
 
@@ -165,24 +130,6 @@ class Calculator {
     this.expArr = [new Token("Literal", this.output)];
 
   }
-
-  // negate() {
-
-  //   this.negateState = this.negateState ? false : true;
-
-  //   if (this.negateState == true) {
-
-  //     this.input = this.input.splice((this.input.length - this.previousInput.length), this.previousInput.length, `-${this.previousInput}`);
-  //     this.updateDisplay();
-
-  //   } else {
-      
-  //     this.input = this.input.splice((this.input.length - this.previousInput.length - 1), this.previousInput.length + 1, `${this.previousInput}`);
-  //     this.updateDisplay();
-
-  //   }
-    
-  //}
   
 }
 
@@ -231,6 +178,13 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (value == "+/-") {
 
       c.negate();
+      return;
+
+    }
+
+    if (value == "ce") {
+
+      c.clearExpression();
       return;
 
     }
