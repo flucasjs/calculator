@@ -3,10 +3,11 @@
 
 class Token {
 
-  constructor(type, value) {
+  constructor(type, value, valid) {
 
       this.type = type;
       this.value = value;
+      this.valid = valid;
 
   }
 
@@ -60,29 +61,48 @@ class Calculator {
 
   updateExpressionDisplay() {
 
+      if (this.expArr.length == 1) {
 
-    if (this.rpnTokenArray.length > 1 || (this.input == "")) {
+        if (this.expArr[0].type == "Literal") {
 
-      this.expDisplay.innerHTML = this.expArr.map((item)=>item.value).join("");
+          this.expDisplay.innerHTML = "";
 
-    }
+        } else if (this.expArr[0].type == "Operator") {
+
+          //TODO.
+
+        }
+        
+      } else if (this.expArr.length % 2 != 0) {
+
+        let temp = this.expArr.pop();
+
+        this.expDisplay.innerHTML = this.expArr.map((item)=>item.value).join(" ");
+
+        this.expArr.push(temp);
+
+      } else {
+
+        this.expDisplay.innerHTML = this.expArr.map((item)=>item.value).join(" ");
+
+      }
 
     
   }
 
   updateIODisplay() {
 
-    if (this.expArr.slice(-1)[0] == undefined) {
+    if (this.expArr.length > 0 && this.expArr.length < 3) {
 
-      this.ioDisplay.innerHTML = "";
+      this.ioDisplay.innerHTML = this.expArr[0].value;
 
-    } else if (this.expArr.slice(-1)[0].value == "=") {
+    } else if (this.expArr.length % 2 != 0) {
 
-      this.ioDisplay.innerHTML = this.input;
+      this.ioDisplay.innerHTML = this.expArr[this.expArr.length - 1].value;
 
-    } else if (!isOperator(this.expArr.slice(-1)[0].value)) {
-      
-      this.ioDisplay.innerHTML = this.expArr.slice(-1)[0].value;
+    } else if (this.expArr.length % 2 == 0) {
+
+      this.ioDisplay.innerHTML = this.output;
 
     }
 
@@ -108,12 +128,12 @@ class Calculator {
   clearExpression() {
 
     this.expArr.slice(-1)[0].value = null;
-    this.input = "";
-    this.output = "";
 
     this.updateDisplay();
 
     this.expArr.pop();
+
+    alert(this.expArr.map((item)=>item.value).join(""));
 
   }
 
@@ -139,8 +159,6 @@ let expDisplay = document.getElementById("exp");
 let ioDisplay = document.getElementById("io");
 
 let c = new Calculator(expDisplay, ioDisplay);
-
-let prevInput = "";
 
 let operations = {
     "+": (a, b) => a + b,
@@ -190,6 +208,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
     }
 
     c.newEntry(value);
+    c.calculate();
     c.updateDisplay();
 
 });
@@ -201,41 +220,51 @@ function tokenize(str) {
   var result = []; //array of tokens    
   tokenArr = buffer(str);
 
-  prevInput = tokenArr.slice(-1)[0];
-
-  tokenArr.forEach((char) => {
+  tokenArr.forEach((char, i) => {
 
     if (isDigit(char)) {
 
-      result.push(new Token("Literal", char));
+      result.push(new Token("Literal", char, 1));
 
     } else if (isLetter(char) && char.length == 1) {
 
-      result.push(new Token("Variable", char));
+      result.push(new Token("Variable", char, 1));
 
     } else if (isOperator(char)) {
 
-      result.push(new Token("Operator", char));
+      if (tokenArr.length % 2 == 0 && i > 2 && isOperator(char)) {
+
+        result.push(new Token("Operator", char, 0));
+    
+      } else {
+
+        result.push(new Token("Operator", char, 1));
+
+      }
+
+    } else if (isEqualitySign(char)){
+
+      result.push(new Token("Equal", char, 1));
 
     } else if (isLeftParenthesis(char)) {
 
-      result.push(new Token("Left Parenthesis", char));
+      result.push(new Token("Left Parenthesis", char, 1));
 
     } else if (isRightParenthesis(char)) {
 
-      result.push(new Token("Right Parenthesis", char));
+      result.push(new Token("Right Parenthesis", char, 1));
 
     } else if (isComma(char)) {
 
-      result.push(new Token("Function Argument Separator", char));
+      result.push(new Token("Function Argument Separator", char, 1));
 
     } else if (isFunction(char)) {
     
-          result.push(new Token("Function", char));
+          result.push(new Token("Function", char, 1));
     
         } else if (isSeperator(char)) {
 
-      result.push(new Token("Function Argument Seperator", char));
+      result.push(new Token("Function Argument Seperator", char, 1));
 
     }	
 
@@ -286,15 +315,6 @@ function buffer(str) {
         result.push(numberBuffer.join(""));
         numberBuffer = [];
       
-      } else {
-
-        if (isNegative(ch)) {
-
-          numberBuffer.push(ch);
-          continue;
-
-        }
-
       }
       
       if (letterBuffer.length) {
@@ -412,6 +432,8 @@ function parse(tokenArr) {
   Token.prototype.associativity = function() { return assoc[this.value]; };
 
   tokenArr.forEach( function(tkn) {
+
+    if (!tkn.valid) { return; }
     
     if (tkn.type == "Literal" || tkn.type == "Letter") {
     
@@ -543,9 +565,9 @@ function isSeperator(ch) {
 
 }
 
-function isNegative(ch) {
+function isEqualitySign(ch) {
 
-  return /-/.test(ch);
+  return /=/.test(ch);
 
 }
 
@@ -578,13 +600,7 @@ function evaluate(rpnArr) {
 
         numStack.push(operations[tkn.value](numStack.pop(), num2));
 
-      } else if (isNegative(tkn.value)) {
-
-        numStack.push(tkn.value);
-
       }
-    
-      
 
     }
     
