@@ -232,7 +232,7 @@ function tokenize(str) {
 
     } else if (isOperator(char)) {
 
-      if (tokenArr.length % 2 == 0 && i > 2 && isOperator(char)) {
+      if (i+1 == tokenArr.length && isOperator(char)) {
 
         result.push(new Token("Operator", char, 0));
     
@@ -433,7 +433,7 @@ function parse(tokenArr) {
 
   tokenArr.forEach( function(tkn) {
 
-    if (!tkn.valid) { return; }
+    if (!tkn.valid) { tkn.valid = 1; return; }
     
     if (tkn.type == "Literal" || tkn.type == "Letter") {
     
