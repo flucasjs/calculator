@@ -505,8 +505,6 @@ function parse(tokenArr) {
     
   });
 
-  //return outQueue.concat(opStack.reverse()).map((item)=>item.value).join(" ");
-
   return outQueue.concat(opStack.reverse());
 
 }
@@ -609,11 +607,3 @@ function evaluate(rpnArr) {
   return numStack.pop();
 
 }
-
-// if (!String.prototype.splice) {
-
-//   String.prototype.splice = function(start, delCount, newSubStr) {
-//       return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
-//   };
-
-// }
