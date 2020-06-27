@@ -39,8 +39,12 @@ class Calculator {
 
         return;
 
+      } else {
+
+        this.input += value;
+
       }
-    
+      
     } else {
       
       this.input += value;
