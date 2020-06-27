@@ -29,18 +29,18 @@ class Calculator {
 
   newEntry(value) {
 
-    if (isOperator(value) && this.input == "") {
+    if (isOperator(value)) {
 
-      if (value == "-") {
-
-        this.input += value;
-
-      } else {
+      if (this.input == "") {
 
         this.input = "0" + value;
 
+      } else if (isOperator(this.input.slice(-1))) {
+
+        return;
+
       }
-      
+    
     } else {
       
       this.input += value;
@@ -66,10 +66,6 @@ class Calculator {
         if (this.expArr[0].type == "Literal") {
 
           this.expDisplay.innerHTML = "";
-
-        } else if (this.expArr[0].type == "Operator") {
-
-          //TODO.
 
         }
         
