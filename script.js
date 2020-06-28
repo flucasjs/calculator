@@ -22,7 +22,7 @@ class Calculator {
     this.input = "";
     this.output = "";
     this.rpnTokenArray = [];
-    this.expArray = [];
+    this.expArr = [];
     
   }
 
@@ -31,13 +31,21 @@ class Calculator {
 
     if (isOperator(value)) {
 
-      if (this.input == "") {
+      if (this.expArr.length == 0) {
 
         this.input = "0" + value;
 
       } else if (isOperator(this.input.slice(-1))) {
 
-        return;
+        if (this.input.slice(0, 1) == 0) {
+
+          this.input = "0" + value;
+
+        } else {
+
+          return;
+
+        }
 
       } else {
 
@@ -46,7 +54,7 @@ class Calculator {
       }
       
     } else {
-      
+
       this.input += value;
 
     }
@@ -133,21 +141,28 @@ class Calculator {
 
     this.expArr.pop();
 
-    alert(this.expArr.map((item)=>item.value).join(""));
-
   }
 
   equal() {
 
+    if (this.expArr.length == 0) { 
+
+      this.expArr.push(new Token("Literal", 0, 1));
+      this.expArr.push(new Token("Equal", "=", 0));
+      this.updateDisplay();
+      this.expArr = [];
+      return;
+
+    }
 
     this.calculate();
     this.input = this.output;
     this.output = "";
-    this.expArr.push(new Token("Operator", "="));
+    this.expArr.push(new Token("Equal", "=", 0));
 
     this.updateDisplay();
 
-    this.expArr = [new Token("Literal", this.output)];
+    this.expArr = [new Token("Literal", this.output, 1)];
 
   }
   
@@ -244,7 +259,7 @@ function tokenize(str) {
 
     } else if (isEqualitySign(char)){
 
-      result.push(new Token("Equal", char, 1));
+      result.push(new Token("Equal", char, 0));
 
     } else if (isLeftParenthesis(char)) {
 
