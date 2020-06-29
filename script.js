@@ -35,6 +35,10 @@ class Calculator {
 
         this.input = "0" + value;
 
+      } else if (this.expArr.length == 1 && this.output != 0) {
+
+        this.input = this.output + value;
+
       } else if (isOperator(this.input.slice(-1))) {
 
         if (this.input.slice(0, 1) == 0) {
@@ -100,7 +104,15 @@ class Calculator {
 
   updateIODisplay() {
 
-    if (this.expArr.length > 0 && this.expArr.length < 3) {
+    if (this.expArr.length == 0 ) {
+
+      this.ioDisplay.innerHTML = "0"; 
+
+    } else if (this.expArr.slice(-1)[0].value == "=") {
+      
+      this.ioDisplay.innerHTML = this.output;
+
+    } else if (this.expArr.length > 0 && this.expArr.length < 3) {
 
       this.ioDisplay.innerHTML = this.expArr[0].value;
 
@@ -135,7 +147,11 @@ class Calculator {
 
   clearExpression() {
 
+    let temp = this.expArr.slice(-1)[0].value
+
     this.expArr.slice(-1)[0].value = null;
+
+    this.input = this.input.replace(temp, "");
 
     this.updateDisplay();
 
@@ -156,8 +172,7 @@ class Calculator {
     }
 
     this.calculate();
-    this.input = this.output;
-    this.output = "";
+    this.input = "";
     this.expArr.push(new Token("Equal", "=", 0));
 
     this.updateDisplay();
