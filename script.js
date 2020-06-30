@@ -223,13 +223,6 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
     }
 
-    if (value == "+/-") {
-
-      c.negate();
-      return;
-
-    }
-
     if (value == "ce") {
 
       c.clearExpression();
