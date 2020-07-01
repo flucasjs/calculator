@@ -70,7 +70,6 @@ class Calculator {
 
   calculate() {
 
-    
     this.output = evaluate(this.rpnTokenArray);
 
   }
@@ -180,6 +179,20 @@ class Calculator {
     this.expArr = [new Token("Literal", this.output, 1)];
 
   }
+
+  negate() {
+
+    if (this.expArr.slice(-1)[0].type = "Literal") {
+
+      let temp = this.expArr[this.expArr.length - 1].value;
+
+      this.expArr[this.expArr.length - 1].value *= -1;
+
+      this.input = this.input.replace(temp, `-${temp}`)
+
+    }
+
+  }
   
 }
 
@@ -227,6 +240,13 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
       c.clearExpression();
       return;
+
+    }
+
+    if (value == "negate") {
+
+      c.negate();
+      value = "";
 
     }
 
@@ -333,11 +353,16 @@ function buffer(str) {
     
     } else if (isOperator(ch)) {
     
-      if (numberBuffer.length) {
+      if (numberBuffer.length == 0 && ch == "-") {
       
+        numberBuffer.push(ch);
+        continue;
+      
+      } else {
+
         result.push(numberBuffer.join(""));
         numberBuffer = [];
-      
+
       }
       
       if (letterBuffer.length) {
@@ -615,7 +640,7 @@ function evaluate(rpnArr) {
     
     } else if (tkn.type == "Operator") {
 
-      if (numStack.length) {
+      if (numStack.length >= 2) {
 
         let num2 = numStack.pop();
 
