@@ -109,8 +109,28 @@ class Calculator {
 
     } else if (this.expArr.slice(-1)[0].value == "=") {
       
-      this.ioDisplay.innerHTML = this.output;
+      if (this.output % 1 != 0) {
 
+        let num1 = (this.expArr.slice(-4)[0].value).toString();
+        let num2 = (this.expArr.slice(-2)[0].value).toString();
+      
+        let num1P = num1.length - 1;
+        let num2P = num2.length - 1;
+
+        if (num1P > num2P) {
+
+          this.output = parseFloat(this.output).toPrecision(num1P);
+
+        } else {
+
+          this.output = parseFloat(this.output).toPrecision(num2P);
+
+        }
+
+      }
+
+      this.ioDisplay.innerHTML = this.output;
+      
     } else if (this.expArr.length > 0 && this.expArr.length < 3) {
 
       this.ioDisplay.innerHTML = this.expArr[0].value;
