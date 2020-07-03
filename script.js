@@ -37,7 +37,15 @@ class Calculator {
 
       } else if (this.expArr.length == 1 && this.output != 0) {
 
-        this.input = this.output + value;
+        if (this.input.slice(-1) == ".") { 
+
+          this.input = this.input.slice(0, -1) + value;
+
+        } else {
+
+          this.input = this.output + value;
+
+        }
 
       } else if (isOperator(this.input.slice(-1))) {
 
@@ -59,6 +67,8 @@ class Calculator {
       
     } else {
 
+      if (this.input.slice(-1) == "." && value == ".") { return; }
+      
       this.input += value;
 
     }
@@ -187,6 +197,12 @@ class Calculator {
       this.updateDisplay();
       this.expArr = [];
       return;
+
+    } else if (this.expArr[this.expArr.length - 1].value.toString().slice(-1) == ".") {
+
+      this.input = this.input.slice(0, -1);
+      this.expArr[this.expArr.length - 1] = new Token("Literal", this.expArr[this.expArr.length - 1].value.slice(0, -1), 1);
+      this.updateDisplay();
 
     }
 
