@@ -218,13 +218,13 @@ class Calculator {
 
   negate() {
 
-    if (this.expArr.slice(-1)[0].type = "Literal") {
+    if (this.expArr.slice(-1)[0].type == "Literal") {
 
       let temp = this.expArr[this.expArr.length - 1].value;
 
       this.expArr[this.expArr.length - 1].value *= -1;
 
-      this.input = this.input.replace(temp, `-${temp}`)
+      this.input = this.expArr.map(item=>item.value).join(" ");
 
     }
 
