@@ -68,6 +68,20 @@ class Calculator {
     } else {
 
       if (this.input.slice(-1) == "." && value == ".") { return; }
+
+      if (value == ".") {
+
+        if (this.input.slice(-1) == ".") {
+
+          return;
+
+        } else if (this.expArr != undefined && (this.expArr.length == 0 || this.expArr.length % 2 == 0) ) {
+
+          this.input += "0";
+
+        }
+
+      }
       
       this.input += value;
 
