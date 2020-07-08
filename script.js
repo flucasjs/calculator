@@ -83,19 +83,15 @@ class Calculator {
 
       }
 
-      if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == "0") {
-
+      if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == "0" && value != "." && this.output % 1 == 0 && this.output != "0.") {
+        alert(this.output);
         if (value == "0") {
 
           return;
 
         } else {
 
-          let temp = this.expArr.slice(-1)[0].value.toString().slice(1);
-
-          let len = this.expArr.pop().value.toString().length;
-
-          this.input = this.input.slice(0, this.input.length - len);
+          this.input = this.input.slice(0, this.input.length - 1);
 
         }
 
