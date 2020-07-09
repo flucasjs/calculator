@@ -29,6 +29,13 @@ class Calculator {
 
   newEntry(value) {
 
+    if (this.divisionErrorFlag == 1) {
+
+      this.divisionErrorFlag = 0;
+      this.clear();
+
+    }
+
     if (isOperator(value)) {
 
       if (this.expArr.length == 0) {
@@ -71,7 +78,7 @@ class Calculator {
 
       if (value == ".") {
 
-        if (this.expArr.slice(-1)[0].type != "Operator" && Number(this.ioDisplay.innerHTML) == this.ioDisplay.innerHTML && this.ioDisplay.innerHTML % 1 != 0) { return; };
+        if (this.expArr.length != 0 && this.expArr.slice(-1)[0].type != "Operator" && Number(this.ioDisplay.innerHTML) == this.ioDisplay.innerHTML && this.ioDisplay.innerHTML % 1 != 0) { return; };
 
         if (this.input.slice(-1) == ".") {
 
@@ -138,12 +145,15 @@ class Calculator {
 
       }
 
-    
   }
 
   updateIODisplay() {
 
-    if (this.expArr.length == 0 ) {
+    if (this.divisionErrorFlag == 1) { 
+      
+      this.ioDisplay.innerHTML = "Cannot Divide By Zero"; 
+
+    } else if (this.expArr.length == 0 ) {
 
       this.ioDisplay.innerHTML = "0"; 
 
@@ -200,11 +210,19 @@ class Calculator {
     this.output = "";
     this.rpnTokenArray = [];
     this.expArr = [];
+    this.divisionErrorFlag = 0;
     this.updateDisplay();
 
   }
 
   clearExpression() {
+
+    if (this.divisionErrorFlag == 1) {
+
+      this.clear();
+      return;
+    
+    };
 
     let temp = this.expArr.slice(-1)[0].value
 
@@ -239,6 +257,12 @@ class Calculator {
     this.calculate();
     this.input = "";
     this.expArr.push(new Token("Equal", "=", 0));
+
+    if (this.output == "Infinity" || this.output == "-Infinity") { 
+
+      this.divisionErrorFlag = 1;
+    
+    }
 
     this.updateDisplay();
 
