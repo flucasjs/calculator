@@ -71,6 +71,8 @@ class Calculator {
 
       if (value == ".") {
 
+        if (this.expArr.slice(-1)[0].type != "Operator" && Number(this.ioDisplay.innerHTML) == this.ioDisplay.innerHTML && this.ioDisplay.innerHTML % 1 != 0) { return; };
+
         if (this.input.slice(-1) == ".") {
 
           return;
@@ -83,8 +85,8 @@ class Calculator {
 
       }
 
-      if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == "0" && value != "." && this.output % 1 == 0 && this.output != "0.") {
-        alert(this.output);
+      if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == "0" && value != "." && this.output % 1 == 0 && this.ioDisplay.innerHTML != "0.") {
+        
         if (value == "0") {
 
           return;
