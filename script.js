@@ -297,7 +297,7 @@ let operations = {
     "+": (a, b) => a + b,
     "-": (a, b) => a - b,
     "*": (a, b) => a * b,
-    "/": (a, b) => a / b,
+    "÷": (a, b) => a / b,
     "%": (a, b) => a % b,
 };
 
@@ -667,7 +667,7 @@ function isLetter(ch) {
 
 function isOperator(ch) {
 
-  return /\+|-|\*|\/|\^|\%/.test(ch);
+  return /\+|-|\*|÷|\^|\%/.test(ch);
 
 }
 
@@ -716,7 +716,7 @@ function evaluate(rpnArr) {
       "+": (a, b) => +a + +b,
       "-": (a, b) => a - b,
       "*": (a, b) => a * b,
-      "/": (a, b) => a / b,
+      "÷": (a, b) => a / b,
       "^": (a, b) => a ** b,
       "%": (a, b) => a % b,
 
