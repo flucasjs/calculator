@@ -276,7 +276,16 @@ class Calculator {
 
       let temp = this.expArr[this.expArr.length - 1].value;
 
-      this.expArr[this.expArr.length - 1].value *= -1;
+      if (this.expArr.slice(-1)[0].value == "0.") {
+
+        this.expArr[this.expArr.length - 1].value = "-" + temp
+
+      } else {
+
+        this.expArr[this.expArr.length - 1].value *= -1;
+
+      }
+      
 
       this.input = this.expArr.map(item=>item.value).join(" ");
 
