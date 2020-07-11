@@ -117,7 +117,7 @@ class Calculator {
 
   calculate() {
 
-    this.output = evaluate(this.rpnTokenArray);
+    this.output = Number(evaluate(this.rpnTokenArray));
 
   }
 
@@ -169,11 +169,11 @@ class Calculator {
 
         if (num1P > num2P) {
 
-          this.output = parseFloat(this.output).toPrecision(num1P);
+          this.output = Number(parseFloat(this.output).toPrecision(num1P));
 
         } else {
 
-          this.output = parseFloat(this.output).toPrecision(num2P);
+          this.output = Number(parseFloat(this.output).toPrecision(num2P));
 
         }
 
@@ -266,7 +266,7 @@ class Calculator {
 
     this.updateDisplay();
 
-    this.expArr = [new Token("Literal", this.output, 1)];
+    this.expArr = [new Token("Literal", Number(this.output), 1)];
 
   }
 
