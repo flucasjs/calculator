@@ -54,16 +54,29 @@ class Calculator {
 
         }
 
-      } else if (isOperator(this.input.slice(-1))) {
+      } else if (this.expArr.slice(-1)[0].type == "Operator") {
 
         if (this.input.slice(0, 1) == 0) {
 
           this.input = "0" + value;
 
+        } else if (this.expArr.slice(-1)[0].value != value) {
+
+          this.input = this.input.slice(0, this.input.length - 1) + value;
+
+          this.expArr.pop();
+
         } else {
+          
+          if ((this.expArr.slice(-2)[0].value) != this.ioDisplay.innerHTML) {
 
-          return;
+            return;
 
+          } else {
+
+            return;
+
+          }
         }
 
       } else {
@@ -182,7 +195,7 @@ class Calculator {
       this.ioDisplay.innerHTML = this.output;
       
     } else if (this.expArr.length > 0 && this.expArr.length < 3) {
-
+      
       this.ioDisplay.innerHTML = this.expArr[0].value;
 
     } else if (this.expArr.length % 2 != 0) {
@@ -217,22 +230,40 @@ class Calculator {
 
   clearExpression() {
 
-    if (this.divisionErrorFlag == 1) {
+    if (this.expArr.length == 0 || this.expArr.slice(-1)[0].type == "Operator") { 
+      
+      if (this.ioDisplay.innerHTML != "0") {
+
+        this.newEntry(0);
+        this.calculate();
+        this.updateDisplay();
+
+      }
+
+      return; 
+
+    } else if (this.divisionErrorFlag == 1) {
 
       this.clear();
       return;
     
     };
 
-    let temp = this.expArr.slice(-1)[0].value
+    let entryLen = this.expArr.slice(-1)[0].value.toString().length
 
-    this.expArr.slice(-1)[0].value = null;
+    let newLen = this.input.length - entryLen;
+    
+    this.expArr.pop();
 
-    this.input = this.input.replace(temp, "");
+    this.rpnTokenArray = parse(this.expArr);
+
+    this.input = this.input.slice(0, newLen);
+
+    this.newEntry(0);
+
+    this.calculate();
 
     this.updateDisplay();
-
-    this.expArr.pop();
 
   }
 
@@ -251,6 +282,10 @@ class Calculator {
       this.input = this.input.slice(0, -1);
       this.expArr[this.expArr.length - 1] = new Token("Literal", this.expArr[this.expArr.length - 1].value.slice(0, -1), 1);
       this.updateDisplay();
+
+    } else if (this.expArr.slice(-1)[0].type == "Operator") {
+
+      this.expArr.push(new Token("Literal", 0, 1));
 
     }
 
