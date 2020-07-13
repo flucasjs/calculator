@@ -105,7 +105,7 @@ class Calculator {
 
       }
 
-      if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == "0" && value != "." && this.output % 1 == 0 && this.ioDisplay.innerHTML != "0.") {
+      if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == "0" && value != "." && this.output % 1 == 0 && this.ioDisplay.innerHTML != "0." || !isFinite(this.output)) {
         
         if (value == "0") {
 
