@@ -38,6 +38,8 @@ class Calculator {
 
     if (isOperator(value)) {
 
+      this.decimalFlag = 0;
+
       if (this.expArr.length == 0) {
 
         this.input = "0" + value;
@@ -105,15 +107,23 @@ class Calculator {
 
       }
 
-      if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == "0" && value != "." && this.output % 1 == 0 && this.ioDisplay.innerHTML != "0." || !isFinite(this.output)) {
+      if (value == ".") {
+
+        this.decimalFlag = 1;
+
+      } else if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.slice(0, 1) == 0 || !isFinite(this.output)) {
         
-        if (value == "0") {
+          if (this.decimalFlag != 1) {
 
-          return;
+          if (value != 0) {
 
-        } else {
-
-          this.input = this.input.slice(0, this.input.length - 1);
+            this.input = this.input.slice(0, this.input.length - 1);
+  
+          } else {
+  
+            return;
+      
+          }
 
         }
 
@@ -174,8 +184,8 @@ class Calculator {
       
       if (this.output % 1 != 0) {
 
-        let num1 = (this.expArr.slice(-4)[0].value).toString();
-        let num2 = (this.expArr.slice(-2)[0].value).toString();
+        let num1 = this.expArr.slice(-4)[0].value;
+        let num2 = this.expArr.slice(-2)[0].value;
       
         let num1P = num1.length - 1;
         let num2P = num2.length - 1;
@@ -224,6 +234,7 @@ class Calculator {
     this.rpnTokenArray = [];
     this.expArr = [];
     this.divisionErrorFlag = 0;
+    this.decimalFlag = 0;
     this.updateDisplay();
 
   }
@@ -249,7 +260,7 @@ class Calculator {
     
     };
 
-    let entryLen = this.expArr.slice(-1)[0].value.toString().length
+    let entryLen = this.expArr.slice(-1)[0].value.length
 
     let newLen = this.input.length - entryLen;
     
