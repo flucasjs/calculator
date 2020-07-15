@@ -109,8 +109,16 @@ class Calculator {
 
       if (value == ".") {
 
-        this.decimalFlag = 1;
+        if (this.decimalFlag != 1) { 
 
+          this.decimalFlag = 1; 
+        
+        } else {
+
+          return;
+
+        }
+        
       } else if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.slice(0, 1) == 0 || !isFinite(this.output)) {
         
           if (this.decimalFlag != 1) {
