@@ -1,6 +1,5 @@
 // -------------------------------------------------- CLASS DEFINITIONS -------------------------------------------------- //
 
-
 class Token {
 
   constructor(type, value, valid) {
@@ -25,7 +24,6 @@ class Calculator {
     this.expArr = [];
     
   }
-
 
   newEntry(value) {
 
@@ -65,7 +63,6 @@ class Calculator {
         } else if (this.expArr.slice(-1)[0].value != value) {
 
           this.input = this.input.slice(0, this.input.length - 1) + value;
-
           this.expArr.pop();
 
         } else {
@@ -165,9 +162,7 @@ class Calculator {
       } else if (this.expArr.length % 2 != 0) {
 
         let temp = this.expArr.pop();
-
         this.expDisplay.innerHTML = this.expArr.map((item)=>item.value).join(" ");
-
         this.expArr.push(temp);
 
       } else {
@@ -241,8 +236,7 @@ class Calculator {
     this.output = "";
     this.rpnTokenArray = [];
     this.expArr = [];
-    this.divisionErrorFlag = 0;
-    this.decimalFlag = 0;
+    this.clearFlags();
     this.updateDisplay();
 
   }
@@ -253,6 +247,7 @@ class Calculator {
       
       if (this.ioDisplay.innerHTML != "0") {
 
+        this.clearFlags();
         this.newEntry(0);
         this.calculate();
         this.updateDisplay();
@@ -269,19 +264,15 @@ class Calculator {
     };
 
     let entryLen = this.expArr.slice(-1)[0].value.length
-
     let newLen = this.input.length - entryLen;
-    
+
     this.expArr.pop();
-
     this.rpnTokenArray = parse(this.expArr);
-
     this.input = this.input.slice(0, newLen);
 
+    this.clearFlags();
     this.newEntry(0);
-
     this.calculate();
-
     this.updateDisplay();
 
   }
@@ -293,7 +284,9 @@ class Calculator {
       this.expArr.push(new Token("Literal", 0, 1));
       this.expArr.push(new Token("Equal", "=", 0));
       this.updateDisplay();
+
       this.expArr = [];
+
       return;
 
     } else if (this.expArr[this.expArr.length - 1].value.toString().slice(-1) == ".") {
@@ -319,7 +312,6 @@ class Calculator {
     }
 
     this.updateDisplay();
-
     this.expArr = [new Token("Literal", Number(this.output), 1)];
 
   }
@@ -340,10 +332,16 @@ class Calculator {
 
       }
       
-
       this.input = this.expArr.map(item=>item.value).join(" ");
 
     }
+
+  }
+
+  clearFlags() {
+
+    this.divisionErrorFlag = 0;
+    this.decimalFlag = 0;
 
   }
   
@@ -497,7 +495,6 @@ function buffer(str) {
       
         result.push(numberBuffer.join(""));
         numberBuffer = [];
-        
         result.push("*");
       
       }
@@ -545,8 +542,8 @@ function buffer(str) {
       
           result.push(numberBuffer.join(""));
           numberBuffer = [];
-
           result.push("*");
+
         }
         
         result.push(ch);
@@ -579,7 +576,6 @@ function buffer(str) {
       result.push(numberBuffer.join(""));
       numberBuffer = [];
       
-      
       for (let i = 0; i < letterBuffer.length; i++) {
       
         result.push(letterBuffer[i]);
@@ -587,7 +583,6 @@ function buffer(str) {
       }
       
       letterBuffer = [];
-      
       result.push(ch);
     
     }
@@ -596,15 +591,15 @@ function buffer(str) {
 
   if (letterBuffer.length > 0) {
       
-        for (let i = 0; i < letterBuffer.length; i++) {
+    for (let i = 0; i < letterBuffer.length; i++) {
 
-          result.push(letterBuffer[i]);
+      result.push(letterBuffer[i]);
 
-        }
-      
-        letterBuffer = [];
-      
-      } 
+    }
+  
+    letterBuffer = [];
+  
+  } 
       
   if (numberBuffer.length > 0) {
 
@@ -619,25 +614,22 @@ function buffer(str) {
 
 function parse(tokenArr) {
 
-  Array.prototype.peek = function() { return this.slice(-1)[0]; };
-
   let outQueue = [];
   let opStack = [];
 
-  let assoc = {  "^": "right",  "*": "left",  "/": "left", "%": "left",  "+": "left",  "-": "left" };
+  Array.prototype.peek = function() { return this.slice(-1)[0]; };
 
-  let prec = {  "^": 4,  "*": 3,  "/": 3, "%": 3,  "+": 2,  "-": 2 };
-
-  Token.prototype.precedence = function() { return prec[this.value]; };
-
+  let assoc = {  "^": "right",  "*": "left",  "÷": "left", "%": "left",  "+": "left",  "-": "left" };
   Token.prototype.associativity = function() { return assoc[this.value]; };
 
+  let prec = {  "^": 4,  "*": 3,  "÷": 3, "%": 3,  "+": 2,  "-": 2 };
+  Token.prototype.precedence = function() { return prec[this.value]; };
+  
   tokenArr.forEach( function(tkn) {
 
     if (!tkn.valid) { tkn.valid = 1; return; }
     
     if (tkn.type == "Literal" || tkn.type == "Letter") {
-    
     
       outQueue.push(tkn);
     
@@ -687,11 +679,11 @@ function parse(tokenArr) {
     
       if (opStack.length) {
       
-          while (opStack.peek().value != "(") {
+        while (opStack.peek().value != "(") {
 
           outQueue.push(opStack.pop());
 
-          }
+        }
       
       }
       
@@ -796,7 +788,6 @@ function evaluate(rpnArr) {
       if (numStack.length >= 2) {
 
         let num2 = numStack.pop();
-
         numStack.push(operations[tkn.value](numStack.pop(), num2));
 
       }
