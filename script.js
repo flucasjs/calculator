@@ -96,7 +96,13 @@ class Calculator {
 
           return;
 
-        } else if (this.expArr != undefined && (this.expArr.length == 0 || this.expArr.length % 2 == 0) ) {
+        } else if (this.expArr != undefined && (this.equalFlag == 1 || this.expArr.length % 2 == 0) ) {
+
+          if (this.equalFlag == 1) {
+
+            this.equalFlag = 0;
+       
+          }
 
           this.input += "0";
 
@@ -120,15 +126,15 @@ class Calculator {
         
           if (this.decimalFlag != 1) {
 
-          if (value != 0) {
+            if (value != 0) {
 
-            this.input = this.input.slice(0, this.input.length - 1);
-  
-          } else {
-  
-            return;
-      
-          }
+              this.input = this.input.slice(0, this.input.length - 1);
+    
+            } else {
+    
+              return;
+        
+            }
 
         }
 
@@ -184,6 +190,10 @@ class Calculator {
       this.ioDisplay.innerHTML = "0"; 
 
     } else if (this.expArr.slice(-1)[0].value == "=") {
+
+      // Cycle through the arr and collect all tokens of type=literal
+      // Determine len
+      // Set
       
       if (this.output % 1 != 0) {
 
@@ -283,8 +293,9 @@ class Calculator {
 
       this.expArr.push(new Token("Literal", 0, 1));
       this.expArr.push(new Token("Equal", "=", 0));
+      this.output = 0;
       this.updateDisplay();
-
+      this.output = "";
       this.expArr = [];
 
       return;
@@ -314,6 +325,8 @@ class Calculator {
     this.updateDisplay();
     this.expArr = [new Token("Literal", Number(this.output), 1)];
 
+    this.equalFlag = 1;
+
   }
 
   negate() {
@@ -342,6 +355,7 @@ class Calculator {
 
     this.divisionErrorFlag = 0;
     this.decimalFlag = 0;
+    this.equalFlag = 0;
 
   }
   
