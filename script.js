@@ -36,6 +36,16 @@ class Calculator {
 
     if (isOperator(value)) {
 
+      if (this.equalFlag == 1) {
+
+        this.input = this.output + value;
+        this.expArr = tokenize(this.input);
+        this.rpnTokenArray = parse(this.expArr);
+        this.equalFlag = 0;
+        return;
+
+      }
+
       this.decimalFlag = 0;
 
       if (this.expArr.length == 0) {
@@ -122,7 +132,7 @@ class Calculator {
 
         }
         
-      } else if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.slice(0, 1) == 0 || !isFinite(this.output)) {
+      } else if (this.expArr.length != 0 && this.expArr.slice(-1)[0].value.toString().slice(0, 1) == 0 || !isFinite(this.output)) {
         
           if (this.decimalFlag != 1) {
 
