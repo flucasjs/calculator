@@ -47,6 +47,7 @@ class Calculator {
       }
 
       this.decimalFlag = 0;
+      this.negationFlag = 0;
 
       if (this.expArr.length == 0) {
 
@@ -175,7 +176,7 @@ class Calculator {
 
         }
         
-      } else if (this.expArr.length % 2 != 0) {
+      } else if (this.expArr.length % 2 != 0 && this.negationFlag != 1) {
 
         let temp = this.expArr.pop();
         this.expDisplay.innerHTML = this.expArr.map((item)=>item.value).join(" ");
@@ -233,7 +234,7 @@ class Calculator {
 
     } else if (this.expArr.length % 2 != 0) {
 
-      this.ioDisplay.innerHTML = this.expArr[this.expArr.length - 1].value;
+      this.ioDisplay.innerHTML = this.expArr.slice(-1)[0].value;
 
     } else if (this.expArr.length % 2 == 0) {
 
@@ -310,10 +311,10 @@ class Calculator {
 
       return;
 
-    } else if (this.expArr[this.expArr.length - 1].value.toString().slice(-1) == ".") {
+    } else if (this.expArr.slice(-1)[0].value.slice(-1) == ".") {
 
       this.input = this.input.slice(0, -1);
-      this.expArr[this.expArr.length - 1] = new Token("Literal", this.expArr[this.expArr.length - 1].value.slice(0, -1), 1);
+      this.expArr[this.expArr.length - 1] = new Token("Literal", this.expArr.slice(-1)[0].value.slice(0, -1), 1);
       this.updateDisplay();
 
     } else if (this.expArr.slice(-1)[0].type == "Operator") {
@@ -335,6 +336,7 @@ class Calculator {
     this.updateDisplay();
     this.expArr = [new Token("Literal", Number(this.output), 1)];
 
+    this.clearFlags();
     this.equalFlag = 1;
 
   }
@@ -343,21 +345,28 @@ class Calculator {
 
     if (this.expArr.slice(-1)[0].type == "Literal") {
 
-      let temp = this.expArr[this.expArr.length - 1].value;
+      let temp = this.expArr.slice(-1)[0].value;
 
       if (this.expArr.slice(-1)[0].value == "0.") {
 
-        this.expArr[this.expArr.length - 1].value = "-" + temp
+        this.expArr.slice(-1)[0].value = "-" + temp
 
       } else {
 
-        this.expArr[this.expArr.length - 1].value *= -1;
+        this.expArr.slice(-1)[0].value *= -1;
 
       }
       
-      this.input = this.expArr.map(item=>item.value).join(" ");
+    } else if (this.expArr.slice(-1)[0].type == "Operator") {
+
+      this.negationFlag = 1;
+      this.expArr.push(new Token("Literal", -this.output, 1));
+      this.updateDisplay();
 
     }
+
+    this.expArr.slice(-1)[0].value = this.expArr.slice(-1)[0].value.toString();
+    this.input = this.expArr.map(item=>item.value).join(" ");
 
   }
 
@@ -366,6 +375,7 @@ class Calculator {
     this.divisionErrorFlag = 0;
     this.decimalFlag = 0;
     this.equalFlag = 0;
+    this.negationFlag = 0;
 
   }
   
@@ -421,7 +431,9 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (value == "negate") {
 
       c.negate();
-      value = "";
+      c.calculate();
+      c.updateDisplay();
+      return;
 
     }
 
