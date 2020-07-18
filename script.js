@@ -319,7 +319,8 @@ class Calculator {
 
     } else if (this.expArr.slice(-1)[0].type == "Operator") {
 
-      this.expArr.push(new Token("Literal", 0, 1));
+      this.expArr.push(new Token("Literal", this.output, 1));
+      this.rpnTokenArray = parse(this.expArr);
 
     }
 
