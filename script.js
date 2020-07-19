@@ -32,6 +32,11 @@ class Calculator {
       this.divisionErrorFlag = 0;
       this.clear();
 
+    } else if (this.undefinedResultFlag == 1) {
+
+      this.undefinedResultFlag = 0;
+      this.clear();
+
     }
 
     if (isOperator(value)) {
@@ -194,7 +199,11 @@ class Calculator {
 
     if (this.divisionErrorFlag == 1) { 
       
-      this.ioDisplay.innerHTML = "Cannot Divide By Zero"; 
+      this.ioDisplay.innerHTML = "Cannot divide by zero"; 
+
+    } else if (this.undefinedResultFlag == 1) {
+
+      this.ioDisplay.innerHTML = "Result is undefined";
 
     } else if (this.expArr.length == 0 ) {
 
@@ -332,6 +341,10 @@ class Calculator {
 
       this.divisionErrorFlag = 1;
     
+    } else if (isNaN(this.output)) {
+
+      this.undefinedResultFlag = 1;
+
     }
 
     this.updateDisplay();
@@ -374,6 +387,7 @@ class Calculator {
   clearFlags() {
 
     this.divisionErrorFlag = 0;
+    this.undefinedResultFlag = 0;
     this.decimalFlag = 0;
     this.equalFlag = 0;
     this.negationFlag = 0;
