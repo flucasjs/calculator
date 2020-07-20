@@ -266,7 +266,8 @@ class Calculator {
     this.output = "";
     this.rpnTokenArray = [];
     this.expArr = [];
-    this.clearFlags();
+    this.clearAllFlags();
+    this.enableOperators();
     this.updateDisplay();
 
   }
@@ -277,7 +278,7 @@ class Calculator {
       
       if (this.ioDisplay.innerHTML != "0") {
 
-        this.clearFlags();
+        this.clearAllFlags();
         this.newEntry(0);
         this.calculate();
         this.updateDisplay();
@@ -300,7 +301,7 @@ class Calculator {
     this.rpnTokenArray = parse(this.expArr);
     this.input = this.input.slice(0, newLen);
 
-    this.clearFlags();
+    this.clearAllFlags();
     this.newEntry(0);
     this.calculate();
     this.updateDisplay();
@@ -340,17 +341,20 @@ class Calculator {
     if (this.output == "Infinity" || this.output == "-Infinity") { 
 
       this.divisionErrorFlag = 1;
+      this.disableOperators();
     
     } else if (isNaN(this.output)) {
 
       this.undefinedResultFlag = 1;
+      this.disableOperators();
 
     }
 
     this.updateDisplay();
     this.expArr = [new Token("Literal", Number(this.output), 1)];
 
-    this.clearFlags();
+    this.decimalFlag = 0;
+    this.negationFlag = 0;
     this.equalFlag = 1;
 
   }
@@ -384,13 +388,39 @@ class Calculator {
 
   }
 
-  clearFlags() {
+  clearAllFlags() {
 
     this.divisionErrorFlag = 0;
     this.undefinedResultFlag = 0;
     this.decimalFlag = 0;
     this.equalFlag = 0;
     this.negationFlag = 0;
+
+  }
+
+  disableOperators() {
+
+    let elements = document.querySelectorAll(".op, .dec, .eq")
+    
+    for (let element of elements) {
+
+      element.style.color = "gray";
+      element.style.cursor = "default";
+
+    }
+    
+  }
+
+  enableOperators() {
+
+    let elements = document.querySelectorAll(".op, .dec, .eq")
+    
+    for (let element of elements) {
+
+      element.style.color = "black";
+      element.style.cursor = "pointer";
+
+    }
 
   }
   
