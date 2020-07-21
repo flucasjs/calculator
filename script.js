@@ -27,26 +27,18 @@ class Calculator {
 
   newEntry(value) {
 
-    if (this.divisionErrorFlag == 1) {
-
-      this.divisionErrorFlag = 0;
-      this.clear();
-
-    } else if (this.undefinedResultFlag == 1) {
-
-      this.undefinedResultFlag = 0;
-      this.clear();
-
-    }
-
     if (isOperator(value)) {
 
-      if (this.equalFlag == 1) {
+      if (this.equalFlag == 1 && !(this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1)) {
 
         this.input = this.output + value;
         this.expArr = tokenize(this.input);
         this.rpnTokenArray = parse(this.expArr);
         this.equalFlag = 0;
+        return;
+
+      } else if (this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1) {
+
         return;
 
       }
@@ -102,6 +94,16 @@ class Calculator {
       
     } else {
 
+      if (isDecimal(value)) {
+
+        if (this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1) {
+
+          return;
+
+        }
+
+      }
+
       if (this.input.slice(-1) == "." && value == ".") { return; }
 
       if (value == ".") {
@@ -152,6 +154,22 @@ class Calculator {
         
             }
 
+        }
+
+      }
+
+      if (isDigit(value)) {
+
+        if (this.divisionErrorFlag == 1) {
+
+          this.divisionErrorFlag = 0;
+          this.clear();
+    
+        } else if (this.undefinedResultFlag == 1) {
+    
+          this.undefinedResultFlag = 0;
+          this.clear();
+    
         }
 
       }
@@ -361,6 +379,12 @@ class Calculator {
 
   negate() {
 
+    if (this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1) {
+
+      return;
+      
+    }
+
     if (this.expArr.slice(-1)[0].type == "Literal") {
 
       let temp = this.expArr.slice(-1)[0].value;
@@ -406,6 +430,7 @@ class Calculator {
 
       element.style.color = "gray";
       element.style.cursor = "default";
+      element.classList.remove("act");
 
     }
     
@@ -419,6 +444,7 @@ class Calculator {
 
       element.style.color = "black";
       element.style.cursor = "pointer";
+      element.classList.add("act");
 
     }
 
@@ -476,6 +502,13 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (value == "negate") {
 
       c.negate();
+
+      if (c.undefinedResultFlag == 1 || c.divisionErrorFlag == 1) {
+
+        return;
+  
+      }
+
       c.calculate();
       c.updateDisplay();
       return;
@@ -483,6 +516,13 @@ document.querySelector(".content").addEventListener("click", (event) => {
     }
 
     c.newEntry(value);
+
+    if (c.undefinedResultFlag == 1 || c.divisionErrorFlag == 1) {
+
+      return;
+
+    }
+
     c.calculate();
     c.updateDisplay();
 
