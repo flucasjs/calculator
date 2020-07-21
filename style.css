@@ -60,16 +60,13 @@ body {
     align-items: center;
 }
 
-.key:hover {
+.act:hover {
     background: rgba(0, 150, 150, 0.3);
     cursor: pointer;
-<<<<<<< HEAD
 }
 
-.key:active {
+.act:active {
     background: rgba(0, 100, 100, 0.3);
-=======
->>>>>>> aede5b052489a0b33d28748d150ccf1e7d282807
 }
 
 .key p {
