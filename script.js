@@ -504,6 +504,76 @@ document.querySelector(".content").addEventListener("click", (event) => {
 
 });
 
+document.addEventListener("keydown", (event) => {
+
+  let value = event.key;
+
+  if (event.key == "Enter") {
+
+    value = "=";
+
+  } else if (event.key == "/") {
+    
+    value = "÷"
+
+  } else if (!isValid(value) || isFunctionKey(value)) {
+
+    return;
+
+  }
+
+  if (value == "c") {
+
+    c.clear();
+    return;
+
+  }
+
+  if (value == "=") {
+
+    c.equal();
+    return;
+
+  }
+
+  if (value == "ce") {
+
+    c.clearExpression();
+    return;
+
+  }
+
+  if (value == "negate") {
+
+    c.negate();
+
+    if (c.undefinedResultFlag == 1 || c.divisionErrorFlag == 1) {
+
+      return;
+
+    }
+
+    c.calculate();
+    c.updateDisplay();
+    return;
+
+  }
+
+  c.newEntry(value);
+
+  if (c.undefinedResultFlag == 1 || c.divisionErrorFlag == 1) {
+
+    return;
+
+  }
+
+  c.calculate();
+  c.updateDisplay();
+
+}
+
+);
+
 // -------------------------------------------------- FUNCTION DEFINITIONS -------------------------------------------------- //
 
 function tokenize(str) {
@@ -799,6 +869,18 @@ function parse(tokenArr) {
 
 }
 
+function isValid(ch) {
+
+  return /\+|-|\*|÷|\/|\^|\%|\d|\.|=/.test(ch);
+
+}
+
+function isFunctionKey(ch) {
+
+  return /F\d/.test(ch);
+
+}
+
 function isComma(ch) {
 
   return (ch === ",");
@@ -819,7 +901,7 @@ function isLetter(ch) {
 
 function isOperator(ch) {
 
-  return /\+|-|\*|÷|\^|\%/.test(ch);
+  return /\+|-|\*|÷|\/|\^|\%/.test(ch);
 
 }
 
