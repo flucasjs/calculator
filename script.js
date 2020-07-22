@@ -229,30 +229,6 @@ class Calculator {
 
     } else if (this.expArr.slice(-1)[0].value == "=") {
 
-      // Cycle through the arr and collect all tokens of type=literal
-      // Determine len
-      // Set
-      
-      if (this.output % 1 != 0) {
-
-        let num1 = this.expArr.slice(-4)[0].value;
-        let num2 = this.expArr.slice(-2)[0].value;
-      
-        let num1P = num1.length - 1;
-        let num2P = num2.length - 1;
-
-        if (num1P > num2P) {
-
-          this.output = Number(parseFloat(this.output).toPrecision(num1P));
-
-        } else {
-
-          this.output = Number(parseFloat(this.output).toPrecision(num2P));
-
-        }
-
-      }
-
       this.ioDisplay.innerHTML = this.output;
       
     } else if (this.expArr.length > 0 && this.expArr.length < 3) {
