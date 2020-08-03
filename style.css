@@ -29,7 +29,7 @@ body {
 
 #exp {
     color: rgba(100, 100, 100);
-    font-family: 'Lexend Tera', sans-serif;
+    font-family: 'Lexend Tera', Helvetica, sans-serif;
     padding: 15px;
     height: 50px;
     flex: 0 0 auto;
@@ -37,7 +37,7 @@ body {
 }
 
 #io {
-    font-family: 'Lexend Tera', sans-serif;
+    font-family: 'Lexend Tera', Helvetica, sans-serif;
     padding-top: 25px;
     flex: 0 0 auto;
     font-size: 24px;
@@ -70,7 +70,7 @@ body {
 }
 
 .key p {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Roboto', Helvetica, sans-serif;
     font-size: 24px;
     user-select: none;
 }
