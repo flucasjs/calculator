@@ -96,7 +96,16 @@ class Calculator {
 
       if (isDecimal(value)) {
 
-        if (this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1) {
+        if ((this.equalFlag == 1) && !(this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1)) {
+
+          this.input = '0' + value;
+          this.expArr = tokenize(this.input);
+          this.rpnTokenArray = parse(this.expArr);
+          this.equalFlag = 0;
+          this.decimalFlag = 1; 
+          return;
+
+        } else if (this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1) {
 
           return;
 
@@ -315,7 +324,7 @@ class Calculator {
 
       return;
 
-    } else if (this.expArr.slice(-1)[0].value.slice(-1) == ".") {
+    } else if (this.expArr.slice(-1)[0].value.toString().slice(-1) == ".") {
 
       this.input = this.input.slice(0, -1);
       this.expArr[this.expArr.length - 1] = new Token("Literal", this.expArr.slice(-1)[0].value.slice(0, -1), 1);
