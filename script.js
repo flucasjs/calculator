@@ -461,6 +461,36 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (!element) return;
     if (!document.querySelector(".content").contains(element)) return;
 
+    // Disable ripple on relevant keys upon specified error. If no error then create ripple on all keys.
+    if (c.divisionErrorFlag) {
+
+      // Ripple animation on operator and decimal keys are disabled.
+      let disabledKeys = ["op", "dec"];
+
+      // Create an array that stores classes as strings from the key element's classList.
+      let elementClassListArray = Array.from(element.classList);
+
+      // Compare the disabled keys array against the clicked key element's classList array stored in elementClassListArray.
+      // If there is a match, return true to prevent the ripple animation on those specific keys defined in disabledKeys
+      let preventRipple = disabledKeys.some((key) => { 
+
+        return elementClassListArray.indexOf(key) >= 0; 
+
+      });
+
+      if (!preventRipple) {
+
+        createRipple(event, element);
+
+      }
+
+    } else {
+
+      createRipple(event, element);
+
+    }
+    
+
     let value = element.id;
     
     if (value == "c") {
@@ -985,5 +1015,43 @@ function evaluate(rpnArr) {
   });
 
   return numStack.pop();
+
+}
+
+function createRipple(event, key) {
+
+  let container = document.querySelector(".container")
+  const wrapper = createWrapper(key);
+  const circle = document.createElement("span");
+  const diameter = Math.max(key.clientWidth, key.clientHeight);
+  const radius = diameter / 2;
+  circle.style.width = circle.style.height = `${diameter}px`;
+  circle.style.left = `${event.clientX - (key.offsetLeft + radius)}px`;
+  circle.style.top = `${event.clientY - (key.offsetTop + radius)}px`;
+  circle.classList.add("ripple");
+
+  wrapper.append(circle);
+  container.append(wrapper);
+  
+
+  setTimeout(() => {
+    container.removeChild(document.querySelector("#wrapper"))
+  }, 1000)
+
+}
+
+function createWrapper(key) {
+
+  const elemWrapper = document.createElement("div");
+  elemWrapper.style.position = "fixed";
+  elemWrapper.style.width = `${key.clientWidth}px`;
+  elemWrapper.style.height = `${key.clientHeight}px`;
+  elemWrapper.style.left = `${key.offsetLeft}px`;
+  elemWrapper.style.top = `${key.offsetTop}px`;
+  elemWrapper.style.background = "transparent";
+  elemWrapper.style.overflow = "hidden";
+  elemWrapper.id = "wrapper";
+
+  return elemWrapper;
 
 }
