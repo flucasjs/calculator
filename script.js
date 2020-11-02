@@ -39,6 +39,16 @@ class Calculator {
 
       } else if (this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1) {
 
+        debugger;
+        if (isEqualitySign(value)) {
+          this.input = 0;
+          this.expArr = tokenize(this.input);
+          this.rpnTokenArray = parse(this.expArr);
+          this.undefinedResultFlag = 0;
+          this.divisionErrorFlag = 0;
+          this.updateDisplay();
+        }
+
         return;
 
       }
@@ -312,6 +322,15 @@ class Calculator {
   }
 
   equal() {
+    
+    if (this.divisionErrorFlag) {
+
+      this.clear();
+      this.undefinedResultFlag = 0;
+      this.divisionErrorFlag = 0;
+      return;
+
+    }
 
     if (this.expArr.length == 0) { 
 
@@ -465,7 +484,7 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (c.divisionErrorFlag) {
 
       // Ripple animation on operator and decimal keys are disabled.
-      let disabledKeys = ["op", "dec"];
+      let disabledKeys = ["op", "dec", "eq"];
 
       // Create an array that stores classes as strings from the key element's classList.
       let elementClassListArray = Array.from(element.classList);
