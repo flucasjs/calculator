@@ -39,16 +39,6 @@ class Calculator {
 
       } else if (this.undefinedResultFlag == 1 || this.divisionErrorFlag == 1) {
 
-        debugger;
-        if (isEqualitySign(value)) {
-          this.input = 0;
-          this.expArr = tokenize(this.input);
-          this.rpnTokenArray = parse(this.expArr);
-          this.undefinedResultFlag = 0;
-          this.divisionErrorFlag = 0;
-          this.updateDisplay();
-        }
-
         return;
 
       }
@@ -323,7 +313,7 @@ class Calculator {
 
   equal() {
     
-    if (this.divisionErrorFlag) {
+    if (this.divisionErrorFlag || this.undefinedResultFlag) {
 
       this.clear();
       this.undefinedResultFlag = 0;
@@ -388,32 +378,36 @@ class Calculator {
       return;
       
     }
+    
+    if (this.expArr.length) {
 
-    if (this.expArr.slice(-1)[0].type == "Literal") {
+      if (this.expArr.slice(-1)[0].type == "Literal") {
 
-      let temp = this.expArr.slice(-1)[0].value;
-
-      if (this.expArr.slice(-1)[0].value == "0.") {
-
-        this.expArr.slice(-1)[0].value = "-" + temp
-
-      } else {
-
-        this.expArr.slice(-1)[0].value *= -1;
-
+        let temp = this.expArr.slice(-1)[0].value;
+  
+        if (this.expArr.slice(-1)[0].value == "0.") {
+  
+          this.expArr.slice(-1)[0].value = "-" + temp
+  
+        } else {
+  
+          this.expArr.slice(-1)[0].value *= -1;
+  
+        }
+        
+      } else if (this.expArr.slice(-1)[0].type == "Operator") {
+  
+        this.negationFlag = 1;
+        this.expArr.push(new Token("Literal", -this.output, 1));
+        this.updateDisplay();
+  
       }
-      
-    } else if (this.expArr.slice(-1)[0].type == "Operator") {
 
-      this.negationFlag = 1;
-      this.expArr.push(new Token("Literal", -this.output, 1));
-      this.updateDisplay();
+      this.expArr[0].value = this.expArr.slice(-1)[0].value.toString();
+      this.input = this.expArr.map(item=>item.value).join(" ");
 
     }
-
-    this.expArr.slice(-1)[0].value = this.expArr.slice(-1)[0].value.toString();
-    this.input = this.expArr.map(item=>item.value).join(" ");
-
+    
   }
 
   clearAllFlags() {
@@ -428,11 +422,11 @@ class Calculator {
 
   disableOperators() {
 
-    let elements = document.querySelectorAll(".op, .dec, .eq")
+    let elements = document.querySelectorAll(".op, .dec")
     
     for (let element of elements) {
 
-      element.style.color = "gray";
+      element.style.color = "#cdcdcd";
       element.style.cursor = "default";
       element.classList.remove("act");
 
@@ -480,11 +474,11 @@ document.querySelector(".content").addEventListener("click", (event) => {
     if (!element) return;
     if (!document.querySelector(".content").contains(element)) return;
 
-    // Disable ripple on relevant keys upon specified error. If no error then create ripple on all keys.
-    if (c.divisionErrorFlag) {
+    // Disable ripple on relevant keys upon specified errors. If no error then create ripple on all keys.
+    if (c.divisionErrorFlag || c.undefinedResultFlag) {
 
       // Ripple animation on operator and decimal keys are disabled.
-      let disabledKeys = ["op", "dec", "eq"];
+      let disabledKeys = ["op", "dec"];
 
       // Create an array that stores classes as strings from the key element's classList.
       let elementClassListArray = Array.from(element.classList);
@@ -1054,7 +1048,9 @@ function createRipple(event, key) {
   
 
   setTimeout(() => {
+
     container.removeChild(document.querySelector("#wrapper"))
+
   }, 1000)
 
 }
@@ -1071,6 +1067,25 @@ function createWrapper(key) {
   elemWrapper.style.overflow = "hidden";
   elemWrapper.id = "wrapper";
 
+  if (key === document.querySelector(".key:nth-child(1)")) {
+
+    elemWrapper.style.borderRadius = "15px 0px 0px 0px";
+
+  } else if (key === document.querySelector(".key:nth-child(4)")) {
+
+    elemWrapper.style.borderRadius = "0px 15px 0px 0px";
+
+  } else if (key === document.querySelector(".key:nth-child(17)")) {
+
+    elemWrapper.style.borderRadius = "0px 0px 0px 15px";
+
+  }
+
   return elemWrapper;
 
 }
+
+// let divs = document.querySelectorAll('.key, #io, #exp');
+// for (let i = 0; i < divs.length; i++){
+//   divs[i].setAttribute('tabindex', '0');
+// }
