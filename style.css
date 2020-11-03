@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Lobster&family=Nunito:wght@400;700&family=Trispace&display=swap');
+
 *, *:after, *:before {
     padding: 0;
     margin: 0;
@@ -8,62 +10,93 @@
 body {
     margin: 0;
     padding: 0;
-    background-color: whitesmoke;
+    height: 100vh;
+    overflow: hidden;
+    background-color: #007CC7;
+}
+
+h1 {
+    font-family: 'Lobster', cursive;
+    color:#EEFBFB;
+    top: 0;
+    left: 15px;
+    position: absolute;
+    font-size: 45px;
 }
 
 .container {
     display: grid;
     grid-template-columns: repeat(12, 1fr);
-    grid-template-rows: 1fr 3fr;
-    width: 400px;
-    height: 550px;
-    margin: 25px auto 0px;
-    background-color: lightblue;
-    box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.4);
+    grid-template-rows: 1fr;
+    width: 350px;
+    height: 400px;
+    margin: 0 auto;
+    background-color: transparent;
+    /* box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.4); */
 }
 
 .header {
-    grid-column: 1 / span 12;
-    grid-row: 1 / span 1;
+    width: 375px;
+    margin: 25px auto 10px;
+    padding: 10px;
     display: flex;
     flex-direction: column;
-    background-color: rgb(0, 200, 200);
+    background-color: #203647;
+    color: white;
+    border-radius: 5px 35px 35px 35px;
+    box-shadow: 0px 8px 6px -6px rgba(0, 0, 0, 0.4);
+    font-family: 'Nunito', sans-serif;
 }
 
 #exp {
-    color: rgba(100, 100, 100);
-    font-family: 'Lexend Tera', Helvetica, sans-serif;
+    /* color: rgba(100, 100, 100); */
     padding: 15px;
-    height: 50px;
+    min-height: 60px;
     flex: 0 0 auto;
     text-align: right;
+    margin-bottom: 10px;
+    border-bottom: 1px solid white;
 }
 
 #io {
-    font-family: 'Lexend Tera', Helvetica, sans-serif;
-    padding-top: 25px;
+    font-weight: 700;
     flex: 0 0 auto;
     font-size: 24px;
     text-align: right;
+    padding-right: 10px;
 }
 
 .content {
     grid-column: 1 / span 12;
-    grid-row: 2 / span 1;
+    grid-row: 1 / span 1;
     display: grid;
+    /* The grid may need to be spaced evenly. */
     grid-template-columns: repeat(4, 1fr);
     grid-template-rows: repeat(5, 1fr);
     grid-gap: 1px;
 }
 
 .key {
-    background: rgba(0, 150, 150, 0.2);
-    transition: background 0.1s;
+    background: #EEFBFB;
+    transition: background 0.4s;
     display: flex;
     justify-content: center;
     align-items: center;
     overflow: hidden;
     z-index: 2;
+    
+}
+
+.key:nth-child(1) {
+    border-radius: 15px 0px 0px 0px;
+}
+
+.key:nth-child(4) {
+    border-radius: 0px 15px 0px 0px;
+}
+
+.key:nth-child(17) {
+    border-radius: 0px 0px 0px 15px;
 }
 
 span.ripple {
@@ -73,7 +106,7 @@ span.ripple {
     animation: ripple 0.6s linear;
     cursor: pointer;
     z-index: 1;
-    background-color: rgba(255, 255, 255, 0.7);
+    background-color: #EEFBFB;
 }
 
 @keyframes ripple {
@@ -83,17 +116,45 @@ span.ripple {
     }
 }
 
-.act:hover {
-    background: rgba(0, 150, 150, 0.3);
-    cursor: pointer;
-}
+/* .act:focus {
+    
+} */
 
-.act:active {
-    background: rgba(0, 100, 100, 0.3);
+.act:hover {
+    background:  #eefbfbb9;
+    cursor: pointer;
 }
 
 .key p {
     font-family: 'Roboto', Helvetica, sans-serif;
     font-size: 24px;
     user-select: none;
+}
+
+
+footer {
+    position: fixed;
+    color: white;
+    font-family: 'Trispace', sans-serif;
+    bottom: 0;
+    right: 0;
+    margin-bottom: 0.5em;
+    margin-right: 0.5em;
+}
+
+.app {
+    display: flex;
+    height: 90vh;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+@media (max-width: 812px) {
+    h1 {
+        display: none;
+    }
+    .app {
+        justify-content: start;
+    }
 }
