@@ -1084,8 +1084,3 @@ function createWrapper(key) {
   return elemWrapper;
 
 }
-
-// let divs = document.querySelectorAll('.key, #io, #exp');
-// for (let i = 0; i < divs.length; i++){
-//   divs[i].setAttribute('tabindex', '0');
-// }
