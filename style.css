@@ -84,7 +84,6 @@ h1 {
     align-items: center;
     overflow: hidden;
     z-index: 2;
-    
 }
 
 .key:nth-child(1) {
@@ -116,10 +115,6 @@ span.ripple {
     }
 }
 
-/* .act:focus {
-    
-} */
-
 .act:hover {
     background:  #eefbfbb9;
     cursor: pointer;
@@ -130,7 +125,6 @@ span.ripple {
     font-size: 24px;
     user-select: none;
 }
-
 
 footer {
     position: fixed;
